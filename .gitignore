@@ -23,6 +23,9 @@ yarn-debug.log*
 yarn-error.log*
 /node_modules
 node_modules
+node_modules/
+node_modules/*
+node_modules/.
 ayp-ui/node_modules/.cache/.eslintcache
 ayp-ui/node_modules/.cache/default-development/index.pack
 ayp-ui/node_modules/.cache/default-development/0.pack
