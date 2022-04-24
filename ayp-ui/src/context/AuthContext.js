@@ -1,12 +1,13 @@
 import jwtDecode from "jwt-decode";
 import { createContext, useReducer } from "react";
-import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 let user = {
     nickName: null,
     email: null,
     role: null,
-    userId: null
+    userId: null,
+    loggedIn: false
 }
 export const AuthContext = createContext();
 
@@ -15,7 +16,8 @@ export const authReducer = (state, action) => {
         user.email = userFromToken.emailaddress;
         user.nickName = userFromToken.nickName;
         user.role = userFromToken.role;
-        user.userId = userFromToken.userId
+        user.userId = userFromToken.userId;
+        user.loggedIn = true;
     }
 
     switch (action.type) {
@@ -30,20 +32,24 @@ export const authReducer = (state, action) => {
             return { ...state, jwtToken: action.payload, user: user }
         case 'LOGOUT':
             localStorage.clear();
-            return { ...state, user: null, jwtToken:null  }
+            return { ...state, user: null, jwtToken: null }
         default:
             return state;
     }
 }
 export const AuthContextProvider = ({ children }) => {
-
+    const history = useHistory();
+    const handleLogout = () => {
+        dispatch({ type: "LOGOUT" })
+        history.push("/");
+    }
     const [state, dispatch] = useReducer(authReducer, {
         user: JSON.parse(localStorage.getItem("user")),
         jwtToken: null
     });
 
     return (
-        <AuthContext.Provider value={{ ...state, dispatch }}>
+        <AuthContext.Provider value={{ ...state, dispatch, handleLogout }}>
             {children}
         </AuthContext.Provider>
     )

@@ -5,6 +5,8 @@ import React from 'react'
 import { createTheme, ThemeProvider } from '@material-ui/core'
 import Layout from './components/Layout'
 import Login from './pages/Login'
+import { useAuthContext } from './hooks/useAuthContext'
+import Register from './pages/Register'
 const theme = createTheme({
   palette: {
     primary: {
@@ -14,6 +16,7 @@ const theme = createTheme({
 });
 
 function App() {
+  const { user } = useAuthContext();
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -26,7 +29,12 @@ function App() {
               <Create />
             </Route>
             <Route path="/login">
-              <Login />
+              {!user && <Login />}
+              {user && <Notes />}
+            </Route>
+            <Route path="/register">
+              {!user && <Register />}
+              {user && <Notes />}
             </Route>
           </Switch>
         </Layout>

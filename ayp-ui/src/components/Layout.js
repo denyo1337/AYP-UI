@@ -9,11 +9,14 @@ import { AppBar, Button, Toolbar } from "@material-ui/core";
 import { format } from 'date-fns'
 import { Avatar } from "@material-ui/core";
 import { useAuthContext } from "../hooks/useAuthContext";
+import InputIcon from '@material-ui/icons/Input';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 const drawerWith = 240;
 const useStyles = makeStyles((theme) => {
     return {
         page: {
-            background: '#f9f9f9',
+            background: '#f9f9f9', //'#f9f9f9'
             width: '100%',
             padding: theme.spacing(3)
         },
@@ -22,10 +25,12 @@ const useStyles = makeStyles((theme) => {
 
         },
         drawPaper: {
-            width: drawerWith
+            width: drawerWith,
+
         },
         root: {
-            display: 'flex'
+            display: 'flex',
+
         },
         active: {
             background: '#f4f4f4'
@@ -42,6 +47,9 @@ const useStyles = makeStyles((theme) => {
         },
         avatar: {
             marginLeft: theme.spacing(2),
+        },
+        logout: {
+            marginLeft: theme.spacing(2)
         }
     }
 })
@@ -51,6 +59,10 @@ const Layout = ({ children }) => {
     const history = useHistory()
     const location = useLocation();
     const { user, dispatch } = useAuthContext();
+    const handleLogout = () => {
+        dispatch({ type: "LOGOUT" })
+        history.push("/");
+    }
     const menuItems = [
         {
             text: 'My Notes',
@@ -62,11 +74,7 @@ const Layout = ({ children }) => {
             icon: <AddCircleOutlined color='secondary' />,
             path: '/create'
         },
-        {
-            text: 'Login',
-            icon: <AddCircleOutlined color='secondary' />,
-            path: '/login'
-        }
+
     ]
     return (
         <div className={classes.root}>
@@ -79,38 +87,51 @@ const Layout = ({ children }) => {
                     <Typography className={classes.date}>
                         CS:GO app for stats! Date {format(new Date(), 'do MMMM Y')}
                     </Typography>
-                    {user &&
+                    {user && (
                         <Typography>
-                           Welcome {!user.nickName ? user.email : user.nickName} !
+                            Welcome {!user.nickName ? user.email : user.nickName} !
                         </Typography>
+                    )}
+                    {user &&
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            size="small"
+                            className={classes.logout}
+                            endIcon={<MeetingRoomIcon />}
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </Button>}
+                    {!user &&
+                        <List style={{ display: "flex" }}>
+                            <ListItem
+
+                                onClick={() => history.push("/login")}
+
+                            >
+                                <Button
+                                    color="primary"
+                                    variant="contained"
+                                    startIcon={<VpnKeyIcon />}
+                                >
+                                    Sign In
+                                </Button>
+                            </ListItem>
+                            <ListItem
+
+                                onClick={() => history.push("/register")}
+                            >
+                                <Button
+                                    color='secondary'
+                                    variant="contained"
+                                    startIcon={<InputIcon />}
+                                >
+                                    Register
+                                </Button>
+                            </ListItem>
+                        </List>
                     }
-                    {!user && 
-                     <List style={{display:"flex"}}>
-                         <ListItem
-                            button
-                            onClick={() => history.push("/login")}
-                        
-                         >
-                            <Button
-                             color='primary'
-                             variant="contained"
-                            >
-                                Login
-                            </Button>
-                         </ListItem>
-                         <ListItem
-                            button
-                            onClick={() => history.push("/register")}
-                         >
-                            <Button
-                             color='primary'
-                             variant="contained"
-                            >
-                                Register
-                            </Button>
-                         </ListItem>
-                     </List>
-                     }
                     {/* <Typography>
                         Mario
                     </Typography> */}

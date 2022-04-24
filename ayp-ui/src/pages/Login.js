@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     }
 })
 
-const Login = () => {
+const Login = (props) => {
 
     const classes = useStyles();
     const [checked, setChecked] = useState(false);
@@ -48,7 +48,7 @@ const Login = () => {
     const [disabled, setDisabled] = useState(true);
     const [emailError, setEmailError] = useState(false);
     const [authErorr, setAuthError] = useState(null);
-    const {user, dispatch} = useAuthContext();
+    const { user, dispatch } = useAuthContext();
     const history = useHistory();
     const axios = useAxios();
     const handleChange = () => {
@@ -76,26 +76,24 @@ const Login = () => {
     }, [email, password])
 
     const handleSubmit = async (e) => {
-        console.log(user);
         e.preventDefault();
         setAuthError(null);
-        const response = await axios.post('sign-in',{
+        const response = await axios.post('sign-in', {
             email,
             password
         });
         const data = response.data;
-        console.log(data);
-        switch(data.verificationResult){
-            
+        switch (data.verificationResult) {
+
             case 0:
-                dispatch({type:"LOGIN", payload:data.token})
+                dispatch({ type: "LOGIN", payload: data.token })
                 console.log(user);
                 history.push('/');
                 break;
             case 1:
                 setAuthError("Wrong Email or Password");
                 break;
-            case 2: 
+            case 2:
                 setAuthError("Your account has been banned. ")
                 break;
             default:
@@ -118,6 +116,7 @@ const Login = () => {
                         fullWidth required
                         onChange={(e) => setEmail(e.target.value)}
                         error={emailError}
+                        value={email}
 
                     />
                     {emailError && <Typography color="error" >Enter valid email</Typography>}
@@ -127,17 +126,11 @@ const Login = () => {
                         type='password'
                         fullWidth required
                         onChange={(e) => setPassword(e.target.value)}
+                        value={password}
                     />
                     {authErorr && <Typography color="error" >{authErorr}</Typography>}
                     <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={checked}
-                                onChange={handleChange}
-                                inputProps={{ 'aria-label': 'controlled' }}
-                                color="primary"
-                            />
-                        }
+                        control={<Checkbox name="checkedA" />}
                         label="Remember me"
                     />
                     <Button
