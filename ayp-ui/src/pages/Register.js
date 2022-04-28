@@ -55,7 +55,7 @@ const Register = () => {
     const { dispatch } = useAuthContext();
 
     const handleEmailVerification = async (email) => {
-        const response = await axios.get(`validate/email/${email}`)
+        const response = await axios.get(`Users/validate/email/${email}`)
         return response.data;
     }
     const validateNick = () => {
@@ -132,7 +132,7 @@ const Register = () => {
         setIsPending(true);
         e.preventDefault();
 
-        const response = await axios.post("register", {
+        const response = await axios.post("Users/register", {
             email: email,
             nickName: nick,
             natonality: nationality,

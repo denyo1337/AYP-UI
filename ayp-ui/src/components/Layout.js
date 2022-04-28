@@ -12,7 +12,9 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import InputIcon from '@material-ui/icons/Input';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import AccountBoxIcon from '@material-ui/icons/AccountBox';
 const drawerWith = 240;
+
 const useStyles = makeStyles((theme) => {
     return {
         page: {
@@ -39,7 +41,7 @@ const useStyles = makeStyles((theme) => {
             padding: theme.spacing(2)
         },
         appbar: {
-            width: `calc(100% - ${drawerWith}px)`
+            width: `calc(100% - ${drawerWith}px)`,
         },
         toolbar: theme.mixins.toolbar,
         date: {
@@ -65,22 +67,31 @@ const Layout = ({ children }) => {
     }
     const menuItems = [
         {
-            text: 'My Notes',
-            icon: <SubjectOutlined color='secondary' />,
+            text: 'Home',
+            icon: <SubjectOutlined color='primary' />,
             path: '/'
         },
         {
+            text: 'My Account',
+            icon: <AccountBoxIcon color='primary' />,
+            path: '/my-account'
+        },
+        {
             text: 'Create Notes',
-            icon: <AddCircleOutlined color='secondary' />,
+            icon: <AddCircleOutlined color='primary' />,
             path: '/create'
         },
-
     ]
     return (
         <div className={classes.root}>
 
             <AppBar
                 className={classes.appbar}
+                style={{
+                    background: 'white',
+                    color: 'black'
+                }}
+
                 elevation={0}
             >
                 <Toolbar>
@@ -106,9 +117,7 @@ const Layout = ({ children }) => {
                     {!user &&
                         <List style={{ display: "flex" }}>
                             <ListItem
-
                                 onClick={() => history.push("/login")}
-
                             >
                                 <Button
                                     color="primary"
