@@ -45,7 +45,7 @@ export const AuthContextProvider = ({ children }) => {
     }
     const [state, dispatch] = useReducer(authReducer, {
         user: JSON.parse(localStorage.getItem("user")),
-        jwtToken: null
+        jwtToken: localStorage.getItem("jwtToken")?.toString()
     });
 
     return (

@@ -39,21 +39,18 @@ const useStyles = makeStyles({
     }
 })
 
-const Login = (props) => {
+const Login = () => {
 
     const classes = useStyles();
-    const [checked, setChecked] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [disabled, setDisabled] = useState(true);
     const [emailError, setEmailError] = useState(false);
     const [authErorr, setAuthError] = useState(null);
-    const { user, dispatch } = useAuthContext();
+    const { jwtToken, dispatch } = useAuthContext();
     const history = useHistory();
     const axios = useAxios();
-    const handleChange = () => {
-        setChecked(prev => !prev);
-    }
+
 
     useEffect(() => {
         if (email) {
@@ -78,17 +75,17 @@ const Login = (props) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setAuthError(null);
-        const response = await axios.post('sign-in', {
+        const response = await axios.post('Users/sign-in', {
             email,
             password
         });
         const data = response.data;
         switch (data.verificationResult) {
-
             case 0:
                 dispatch({ type: "LOGIN", payload: data.token })
-                console.log(user);
-                history.push('/');
+                if (jwtToken) {
+                    history.push('/');
+                }
                 break;
             case 1:
                 setAuthError("Wrong Email or Password");
@@ -99,7 +96,6 @@ const Login = (props) => {
             default:
                 break;
         }
-
     }
 
     return (
