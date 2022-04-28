@@ -11,7 +11,11 @@ const theme = createTheme({
   palette: {
     primary: {
       main: 'rgb(101, 98, 98)'
+    },
+    secondary:{
+      main:'rgb(9, 69, 159)'
     }
+
   }
 });
 

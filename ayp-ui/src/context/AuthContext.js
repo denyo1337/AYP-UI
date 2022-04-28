@@ -7,7 +7,7 @@ let user = {
     email: null,
     role: null,
     userId: null,
-    loggedIn: false
+    avatarImage:null
 }
 export const AuthContext = createContext();
 

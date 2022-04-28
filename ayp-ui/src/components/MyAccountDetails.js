@@ -7,6 +7,9 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { TextField } from '@material-ui/core'
 import { useState } from 'react';
+import CancelIcon from '@material-ui/icons/Cancel';
+import SaveIcon from '@material-ui/icons/Save';
+import { useAuthContext } from '../hooks/useAuthContext';
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -40,33 +43,71 @@ const useStyles = makeStyles((theme) => ({
 
     }
 }));
+
 const MyAccountDetails = (props) => {
     const classes = useStyles();
     const [email, setEmail] = useState(props.userDetails.email);
     const [nickName, setNickName] = useState(props.userDetails.nickName);
-    const [steamNickName, setSteamNickName] = useState(props.userDetails.steamNickName);
-    const [phoneNumber, setPhoneNumber] = useState(props.userDetails.phoneNumber);
+    const [steamUrl, setSteamUrl] = useState(props.userDetails.steamCommunityUrl ?? "");
+    const [phoneNumber, setPhoneNumber] = useState(props.userDetails.phoneNumber ?? "");
     const [nationality, setNationality] = useState(props.userDetails.nationality);
-    const [gender, setGender] = useState(props.userDetails.gender);
     const [lastLogin, setLastLogIn] = useState(props.userDetails.lastLogOn);
-
+    const [isEditMode, setIsEditMode] = useState(false);
+    const {user} = useAuthContext();
+    const handleResetFormToPropsData = () =>{
+        setEmail(props.userDetails.email);
+        setNickName(props.userDetails.nickName);
+        setSteamUrl(props.userDetails.steamCommunityUrl ?? "");
+        setPhoneNumber(props.userDetails.phoneNumber ?? "");
+        setNationality(props.userDetails.nationality);
+    }
+    const handleCancledEditMode = () =>{
+        debugger;
+        setIsEditMode(false)
+        handleResetFormToPropsData();
+    }
 
     return (
         <Grid container className={classes.root} >
             <Paper elevation={5} >
-                <Avatar
-                    variant="circle"
-                    src="/Account-icon.svg"
-                    className={classes.avatar}
-                />
+                {!user.avatarImage &&
+                    <Avatar
+                        variant="circle"
+                        src="/Account-icon.svg"
+                        className={classes.avatar}
+                    />
+                }
+                {user.avatarImage &&
+
+                    <Avatar
+                        variant="circle"
+                        src="/Account-icon.svg"
+                        className={classes.avatar}
+                    />
+                }
                 <Grid item >
+                    {!isEditMode &&
                     <Button
                         className={classes.editButton}
                         startIcon={<EditIcon />}
                         variant="outlined"
-                        size="small">
+                        size="small"
+                        onClick={()=> setIsEditMode(prev => !prev)}
+                        >
                         Edit
-                    </Button>
+                    </Button> 
+                    }
+                    {isEditMode &&
+                    <Button
+                        className={classes.editButton}
+                        startIcon={<CancelIcon />}
+                        variant="outlined"
+                        size="small"
+                        onClick={()=> handleCancledEditMode()}
+                        >
+                        cancel
+                    </Button> 
+                    }
                 </Grid>
                 <form onSubmit={(e) => console.log(e)}>
                     <TextField
@@ -76,6 +117,7 @@ const MyAccountDetails = (props) => {
                         className={classes.formInputs}
                         id="outlined"
                         variant="outlined"
+                        disabled = {!isEditMode}
                     />
                     <TextField
                         value={nickName}
@@ -84,22 +126,29 @@ const MyAccountDetails = (props) => {
                         className={classes.formInputs}
                         id="outlined"
                         variant="outlined"
+                        disabled = {!isEditMode}
+
                     />
                     <TextField
-                        value={steamNickName}
-                        label="Steam"
-                        onChange={(e) => setSteamNickName(e.target.value)}
+                        value={steamUrl}
+                        label="Community Url"
+                        onChange={(e) => setSteamUrl(e.target.value)}
                         className={classes.formInputs}
                         id="outlined"
                         variant="outlined"
+                        disabled = {!isEditMode}
+
                     />
                     <TextField
                         value={phoneNumber}
                         label="Phone number"
+                        type="number"
                         onChange={(e) => setPhoneNumber(e.target.value)}
                         className={classes.formInputs}
                         id="outlined"
                         variant="outlined"
+                        disabled = {!isEditMode}
+
                     />
                     <TextField
                         value={nationality}
@@ -108,15 +157,10 @@ const MyAccountDetails = (props) => {
                         className={classes.formInputs}
                         id="outlined"
                         variant="outlined"
+                        disabled = {!isEditMode}
+
                     />
-                    <TextField
-                        value={gender}
-                        label="Gender"
-                        onChange={(e) => setGender(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                    />
+         
                     <TextField
                         value={lastLogin}
                         label="Last login"
@@ -124,8 +168,26 @@ const MyAccountDetails = (props) => {
                         className={classes.formInputs}
                         id="outlined"
                         variant="outlined"
+                        disabled
                     />
-
+                    {isEditMode &&
+                    <Grid
+                     item
+                     style={{
+                         textAlign:"center"
+                     }}
+                    >
+                        <Button
+                        type='submit'
+                        variant="contained"
+                        startIcon={<SaveIcon size='small'/>}
+                        size='large'
+                        color='secondary'
+                        >
+                            Save
+                        </Button>
+                    </Grid>
+                        }
                 </form>
             </Paper>
         </Grid>
