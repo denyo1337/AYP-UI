@@ -7,6 +7,8 @@ import Login from './pages/Login'
 import Home from './pages/Home'
 import { useAuthContext } from './hooks/useAuthContext'
 import Register from './pages/Register'
+import MyAccountDetails from './components/MyAccountDetails'
+
 const theme = createTheme({
   palette: {
     primary: {
@@ -42,7 +44,7 @@ function App() {
             </Route>
             <Route path="/my-account">
               {!user && <Login />}
-              {user && <Home />}
+              {user && <MyAccountDetails />}
             </Route>
           </Switch>
         </Layout>

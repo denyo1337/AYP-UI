@@ -1,17 +1,34 @@
 import axios from "axios";
-import jwtDecode from "jwt-decode";
-import dayjs from "dayjs";
 import { useAuthContext } from "./useAuthContext";
 
 const baseURL = "https://localhost:7223/ayb/api/";
 
 const useAxios = () => {
-    const { jwtToken } = useAuthContext();
     const axiosInstance = axios.create({
         baseURL,
-        headers: { Authorization: `Bearer ${jwtToken === null ? localStorage.getItem("jwtToken")?.toString() : jwtToken}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem("jwtToken")?.toString() ?? null}` }
     })
-    return axiosInstance;
+
+    const validateSteamId = (steamid) => {
+        return axiosInstance.get(`Account/validate/${steamid}`)
+    }
+    const handleEmailVerification = async (email) => {
+        const response = await axiosInstance.get(`Users/validate/email/${email}`)
+        return response.data;
+    }
+    const handleRegister = async (user) => {
+        const response = await axiosInstance.post("Users/register", {
+            email: user.email,
+            nickName: user.nick,
+            natonality: user.nationality,
+            password: user.password,
+            confirmPassword: user.confirmPassword,
+            gender: user.gender
+        })
+        return response;
+    }
+
+    return { axiosInstance, validateSteamId, handleEmailVerification, handleRegister };
 }
 
 export default useAxios;

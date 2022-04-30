@@ -49,7 +49,7 @@ const Login = () => {
     const [authErorr, setAuthError] = useState(null);
     const { jwtToken, dispatch } = useAuthContext();
     const history = useHistory();
-    const axios = useAxios();
+    const {axiosInstance : axios} = useAxios();
 
 
     useEffect(() => {

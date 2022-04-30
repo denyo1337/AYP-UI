@@ -13,6 +13,7 @@ import InputIcon from '@material-ui/icons/Input';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
+import PollIcon from '@material-ui/icons/Poll';
 const drawerWith = 240;
 
 const useStyles = makeStyles((theme) => {
@@ -72,7 +73,12 @@ const Layout = ({ children }) => {
             path: '/'
         },
         {
-            text: 'My Account',
+            text: 'My Stats',
+            icon: <PollIcon color="primary"/>,
+            path: '/'
+        },
+        {
+            text: 'Account',
             icon: <AccountBoxIcon color='primary' />,
             path: '/my-account'
         },
@@ -144,7 +150,7 @@ const Layout = ({ children }) => {
                     {/* <Typography>
                         Mario
                     </Typography> */}
-                    <Avatar src="/denyo.png" className={classes.avatar} />
+                    <Avatar src={user?.avatarImage ?? '/Account-icon.svg'} className={classes.avatar} />
                 </Toolbar>
             </AppBar>
 

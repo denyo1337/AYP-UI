@@ -3,21 +3,47 @@ import { createContext, useReducer } from "react";
 import { useHistory } from "react-router-dom";
 
 let user = {
-    nickName: null,
     email: null,
+    nickName: null,
+    steamNickName: null,
+    phoneNumber: null,
+    nationality: null,
+    gender: null,
     role: null,
     userId: null,
-    avatarImage:null
+    avatarImage: null,
+    lastLogOn: null,
+    steamProfileUrl: null,
+    realName: null,
+    steamAccountCreatedAt: null,
+    steamId: null,
 }
 export const AuthContext = createContext();
 
 export const authReducer = (state, action) => {
-    const mapUser = (userFromToken) => {
+
+    const mapUserFromToken = (userFromToken) => {
         user.email = userFromToken.emailaddress;
         user.nickName = userFromToken.nickName;
         user.role = userFromToken.role;
         user.userId = userFromToken.userId;
         user.loggedIn = true;
+    }
+    const mapUpdateUser = (userData) => {
+        user.email = userData.email;
+        user.nickName = userData.nickName;
+        user.steamNickName = userData.steamNickName;
+        user.phoneNumber = userData.phoneNumber;
+        user.gender = userData.gender;
+        user.lastLogOn = userData.lastLogOn;
+        user.steamProfileUrl = userData.profileUrl;
+        user.realName = userData.realName;
+        user.steamId = userData.steamId;
+        user.nationality = userData.nationality;
+        user.steamAccountCreatedAt = userData.steamAccountCreatedAt;
+        user.userId = user.userId;
+        user.role = user.role;
+        user.avatarImage = userData.avatarUrl;
     }
 
     switch (action.type) {
@@ -26,10 +52,15 @@ export const authReducer = (state, action) => {
             let token = action.payload;
             let userFromToken = jwtDecode(token);
             localStorage.setItem("jwtToken", token)
-            mapUser(userFromToken)
+            mapUserFromToken(userFromToken)
             let toJson = JSON.stringify(user);
             localStorage.setItem("user", toJson);
             return { ...state, jwtToken: action.payload, user: user }
+        case 'UPDATE_USER_STEAMDATA':
+            mapUpdateUser(action.payload)
+            localStorage.setItem("user", JSON.stringify(user))
+            return { ...state }
+
         case 'LOGOUT':
             localStorage.clear();
             return { ...state, user: null, jwtToken: null }
@@ -44,7 +75,7 @@ export const AuthContextProvider = ({ children }) => {
         history.push("/");
     }
     const [state, dispatch] = useReducer(authReducer, {
-        user: JSON.parse(localStorage.getItem("user")),
+        user: user.userId ?? JSON.parse(localStorage.getItem("user")),
         jwtToken: localStorage.getItem("jwtToken")?.toString()
     });
 

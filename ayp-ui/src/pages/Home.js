@@ -6,26 +6,28 @@ import MyAccountDetails from '../components/MyAccountDetails'
 
 export default function Home() {
 
-  const { jwtToken, user } = useAuthContext()
-  const axios = useAxios();
+  const { jwtToken, dispatch } = useAuthContext()
+  const {axiosInstance : axios} = useAxios();
   const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
-    axios.get("Account").then((resp) => {
-      setUserDetails(resp.data)
-    }, (err) => {
-      setUserDetails(null);
-      console.log(err);
-    })
-
+    if(jwtToken){
+      axios.get("Account").then((resp) => {
+        setUserDetails(resp.data)
+        dispatch({type:"UPDATE_USER_STEAMDATA", payload: resp.data})
+      }, (err) => {
+        setUserDetails(null);
+        console.log(err);
+      })
+    }
   }, [jwtToken])
 
   return (
 
     <Container>
-      {userDetails && (
+      {/* {userDetails && (
         <MyAccountDetails userDetails={userDetails} />
-      )}
+      )} */}
 
     </Container>
   )

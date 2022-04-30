@@ -48,16 +48,12 @@ const Register = () => {
     const [conrfirmPasswordErr, setConfirmPasswordErr] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [responseError, setresponseError] = useState(false);
-    const axios = useAxios();
+    const { axiosInstance: axios, handleEmailVerification, handleRegister } = useAxios();
     const history = useHistory();
 
 
     const { dispatch } = useAuthContext();
 
-    const handleEmailVerification = async (email) => {
-        const response = await axios.get(`Users/validate/email/${email}`)
-        return response.data;
-    }
     const validateNick = () => {
         if (nick.length < 2) {
             setNickError(true)
@@ -132,7 +128,7 @@ const Register = () => {
         setIsPending(true);
         e.preventDefault();
 
-        const response = await axios.post("Users/register", {
+        const response = await handleRegister({
             email: email,
             nickName: nick,
             natonality: nationality,
@@ -144,7 +140,6 @@ const Register = () => {
             setIsPending(false);
             history.push("/login");
         } else if (response.status === 400) {
-            debugger;
             setIsPending(false);
             const er = response.data.errors;
             if (er.email.length > 0) {
@@ -160,7 +155,6 @@ const Register = () => {
             setIsPending(false)
             setresponseError(true);
         }
-
     }
     return (
         <Grid>
