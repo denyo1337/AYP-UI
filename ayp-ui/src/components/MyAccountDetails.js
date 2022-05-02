@@ -13,6 +13,8 @@ import { useAuthContext } from '../hooks/useAuthContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import useAxios from '../hooks/useAxios'
 import Typography from '@material-ui/core/Typography';
+import EmailValidator from 'email-validator'
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -21,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
         '& > *': {
             marginTop: theme.spacing(1),
             margin: theme.spacing(10),
-            width: theme.spacing(130),
+            width: theme.spacing(125),
             height: theme.spacing(100),
         },
     },
@@ -32,9 +34,16 @@ const useStyles = makeStyles((theme) => ({
         height: theme.spacing(10),
     },
     editButton: {
-        marginLeft: theme.spacing(110),
-        marginBottom: theme.spacing(2)
+        marginLeft: theme.spacing(94),
+        marginBottom: theme.spacing(2),
+        width: theme.spacing(18),
+
     },
+    largeAvatar: {
+        width: theme.spacing(12),
+        height: theme.spacing(12),
+        border:"2px solid black"
+      },
     formInputs: {
         padding: "0px",
         width: theme.spacing(50),
@@ -53,11 +62,10 @@ const useStyles = makeStyles((theme) => ({
 
 const MyAccountDetails = () => {
     const classes = useStyles();
-    const history = useHistory()
     const { user, dispatch } = useAuthContext();
+    const { axiosInstance: axios, validateSteamId, handleEmailVerification, handleNickNameVerification, handleUserDetailsUpdate, handleLogin} = useAxios()
     const [email, setEmail] = useState(user.email);
     const [nickName, setNickName] = useState(user.nickName);
-    const [steamUrl, setSteamUrl] = useState(user.steamCommunityUrl ?? "");
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber ?? "");
     const [nationality, setNationality] = useState(user.nationality);
     const [lastLogin, setLastLogIn] = useState(user.lastLogOn);
@@ -65,8 +73,63 @@ const MyAccountDetails = () => {
     const [isSteamIdValid, setIsSteamIdValid] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
     const [steamEdition, setSteamEdition] = useState(false);
+    const [isValidForm, setIsValidForm] = useState(false);
     const [reload, setReload] = useState(false);
-    const { axiosInstance: axios, validateSteamId } = useAxios()
+    const [emailError, setEmailError] = useState("");
+    const [nickError, setNickError] = useState("");
+    const [disabled, setDisabled] = useState(true);
+    const [password, setPassword] = useState("");
+    const [errorInSavingData, setErrorInSavingData] = useState(false);
+
+    const history = useHistory();
+
+    const handleUpdateUserDataSubmit = (e) =>{
+        setErrorInSavingData(false);
+        e.preventDefault();
+        const user = {
+            email,
+            nickName,
+            phoneNumber,
+            nationality,
+            password
+        };
+        handleUserDetailsUpdate(user).then(success =>{
+            setReload(prev => !prev);
+        }, err =>{
+            setErrorInSavingData(true)
+            console.log(err);
+        })
+
+        if(!errorInSavingData){
+            handleLogin(email, password).then(success => {
+                if(success.verificationResult === 0){
+                    dispatch({type:"UPDATE_TOKEN", payload: success.token})
+                }else{
+                    dispatch({type:"LOGOUT"})
+                    history.push('/login');
+                }
+            },err => {
+                console.log(err);
+            })
+        }
+        setIsEditMode(false);
+        setPassword("");
+    }
+
+    const validateNick = async () => {
+        if(user.nickName !== nickName){
+            if (nickName.length < 2 || await handleNickNameVerification(nickName)) {
+                setNickError("Nick is invalid or already taken.")
+            } else {
+                setNickError("");
+            }
+            if (!nickName) {
+                setNickError("")
+            }
+        }else{
+            setNickError("")
+        }
+    }
 
     const handleValidateSteamId = () => {
         if (steamID !== user.steamId && steamID.length) {
@@ -79,7 +142,6 @@ const MyAccountDetails = () => {
         }
     }
     const handleSteamIdUpdate = () => {
-        debugger;
         axios.put("Account/setSteamId", {
             steamId: steamID,
             resetValue: false // temporary
@@ -87,6 +149,7 @@ const MyAccountDetails = () => {
             axios.put("Account/updateSteamData").then(succ => {
                 setReload(prev => !prev)
             }, err => {
+                console.log(err);
             })
         }, (err) => {
             setReload(prev => !prev)
@@ -94,10 +157,8 @@ const MyAccountDetails = () => {
         setSteamEdition(false)
     }
     const handleResetFormToPropsData = () => {
-
         setEmail(user.email);
         setNickName(user.nickName);
-        setSteamUrl(user.steamCommunityUrl ?? "");
         setPhoneNumber(user.phoneNumber ?? "");
         setNationality(user.nationality);
     }
@@ -106,34 +167,71 @@ const MyAccountDetails = () => {
         handleResetFormToPropsData();
     }
 
+    const validateEmail = async () => {
+        if (!EmailValidator.validate(email)) {
+            setEmailError("Please enter a valid email address");
+        } else if (user.email !== email &&  await handleEmailVerification(email)) {
+            setEmailError("Email you provided is already taken.");
+        } else {
+            setEmailError("")
+        }
+        if (!email) {
+            setEmailError("");
+        }
+    }
+
     useEffect(() => {
         axios.get("Account").then((resp) => {
-            dispatch({ type: "UPDATE_USER_STEAMDATA", payload: resp.data })
+            dispatch({type:"UPDATE_USER_STEAMDATA", payload: resp.data})
         }, (err) => {
             console.log(err);
         })
     }, [reload, user])
 
+    useEffect(() => {
+        if (!email ||
+            !nickName ||
+            emailError ||
+            nickError ||
+            !password ||
+            user.email === email &&
+            user.nickName === nickName &&
+            user.nationality === nationality &&
+            user.phoneNumber === phoneNumber
+        ) {
+            setDisabled(true);
+        } else {
+            setDisabled(false);
+        }
+    },[email, nickName, phoneNumber, nationality, isEditMode, password])
+
     return (
-        <Grid container className={classes.root} >
+        <Grid container className={classes.root}  >
             <Paper elevation={5} >
-                {!user?.avatarImage &&
-                    <Avatar
-                        variant="circle"
-                        src="/Account-icon.svg"
-                        className={classes.avatar}
-                    />
-                }
-                {user?.avatarImage && (
-                    <>
+                <Grid item  style={{
+                    marginBottom: steamEdition ? "57px" : "10px"
+                }}>
+                    {!user?.avatarImage &&
                         <Avatar
                             variant="circle"
-                            src={user.avatarImage ?? "/Account-icon.svg"}
-                            className={classes.avatar}
+                            src="/Account-icon.svg"
+                            className={classes.largeAvatar}
                         />
-                    </>
-                )
-                }
+                    }
+                    {user?.avatarImage && (
+                        <div className={classes.avatar} >
+                            <a href={user.steamProfileUrl} target="_blank" > 
+                                <Avatar
+                                    variant="circle"
+                                    src={user.avatarImage ?? "/Account-icon.svg"}
+                                    className={classes.largeAvatar}
+                                >
+                                </Avatar>
+                            </a>
+                         </div>
+                    )}
+
+                </Grid>
                 <Grid item >
                     {!isEditMode && !steamEdition &&
                         <Button
@@ -158,7 +256,7 @@ const MyAccountDetails = () => {
                         </Button>
                     }
                 </Grid>
-                <form onSubmit={(e) => console.log(e)}>
+                <form onSubmit={handleUpdateUserDataSubmit}>
                     <TextField
                         value={email}
                         label="Email"
@@ -167,7 +265,10 @@ const MyAccountDetails = () => {
                         id="outlined"
                         variant="outlined"
                         disabled={!isEditMode}
+                        onBlur={validateEmail}
+                        error = {emailError}
                     />
+                    {emailError && <Typography variant='body1' color="error" style={{textAlign:'center', marginTop:"-14px"}} >{emailError}</Typography>}
                     <TextField
                         value={nickName}
                         label="Nick Name"
@@ -176,18 +277,11 @@ const MyAccountDetails = () => {
                         id="outlined"
                         variant="outlined"
                         disabled={!isEditMode}
-
+                        onBlur={validateNick}
+                        error={nickError}
                     />
-                    <TextField
-                        value={steamUrl}
-                        label="Community Url"
-                        onChange={(e) => setSteamUrl(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                        disabled={!isEditMode}
+                    {nickError && <Typography variant='body1' color="error" style={{textAlign:'center', marginTop:"-14px"}} >{nickError}</Typography>}
 
-                    />
                     <TextField
                         value={phoneNumber}
                         label="Phone number"
@@ -230,6 +324,16 @@ const MyAccountDetails = () => {
                         onBlur={() => handleValidateSteamId()}
                         error={!isSteamIdValid && steamEdition && user.steamId !== steamID}
                     />
+                     {isEditMode && <TextField
+                        value={password}
+                        label="Password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        className={classes.formInputs}
+                        type="password"
+                        id="outlined"
+                        variant="outlined"
+                    />
+                    }
 
                     {!steamEdition && !isEditMode && <Button
                         className={classes.editSteamIdButton}
@@ -292,6 +396,7 @@ const MyAccountDetails = () => {
                                 startIcon={<SaveIcon size='small' />}
                                 size='large'
                                 color='secondary'
+                                disabled={disabled}
                             >
                                 Save
                             </Button>

@@ -49,7 +49,7 @@ const Login = () => {
     const [authErorr, setAuthError] = useState(null);
     const { jwtToken, dispatch } = useAuthContext();
     const history = useHistory();
-    const {axiosInstance : axios} = useAxios();
+    const {axiosInstance : axios, handleLogin} = useAxios();
 
 
     useEffect(() => {
@@ -75,11 +75,9 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setAuthError(null);
-        const response = await axios.post('Users/sign-in', {
-            email,
-            password
-        });
-        const data = response.data;
+
+        const data = await handleLogin(email, password);
+        
         switch (data.verificationResult) {
             case 0:
                 dispatch({ type: "LOGIN", payload: data.token })

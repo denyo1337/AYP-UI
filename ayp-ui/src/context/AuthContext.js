@@ -2,7 +2,7 @@ import jwtDecode from "jwt-decode";
 import { createContext, useReducer } from "react";
 import { useHistory } from "react-router-dom";
 
-let user = {
+let user =  {
     email: null,
     nickName: null,
     steamNickName: null,
@@ -33,7 +33,7 @@ export const authReducer = (state, action) => {
         user.email = userData.email;
         user.nickName = userData.nickName;
         user.steamNickName = userData.steamNickName;
-        user.phoneNumber = userData.phoneNumber;
+        user.phoneNumber = userData.phoneNumber ?? "";
         user.gender = userData.gender;
         user.lastLogOn = userData.lastLogOn;
         user.steamProfileUrl = userData.profileUrl;
@@ -44,10 +44,12 @@ export const authReducer = (state, action) => {
         user.userId = user.userId;
         user.role = user.role;
         user.avatarImage = userData.avatarUrl;
+        return user;
     }
 
+    
     switch (action.type) {
-        case 'LOGIN':
+        case 'LOGIN':{
             console.log("Dispatching ")
             let token = action.payload;
             let userFromToken = jwtDecode(token);
@@ -56,11 +58,21 @@ export const authReducer = (state, action) => {
             let toJson = JSON.stringify(user);
             localStorage.setItem("user", toJson);
             return { ...state, jwtToken: action.payload, user: user }
-        case 'UPDATE_USER_STEAMDATA':
-            mapUpdateUser(action.payload)
+        }
+        case 'UPDATE_USER_STEAMDATA':{
+            let user = mapUpdateUser(action.payload)
             localStorage.setItem("user", JSON.stringify(user))
-            return { ...state }
+            return { ...state, user: user }
+        }
+        case "UPDATE_TOKEN":{
+            localStorage.setItem('jwtToken', action.payload);
+            return {...state, jwtToken: action.payload}
+        }
+        case "UPDATE_USER":{
+            let userUpdate = mapUpdateUser(action.payload);
 
+            return {...state}
+        }
         case 'LOGOUT':
             localStorage.clear();
             return { ...state, user: null, jwtToken: null }

@@ -8,15 +8,12 @@ export default function Home() {
 
   const { jwtToken, dispatch } = useAuthContext()
   const {axiosInstance : axios} = useAxios();
-  const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     if(jwtToken){
       axios.get("Account").then((resp) => {
-        setUserDetails(resp.data)
         dispatch({type:"UPDATE_USER_STEAMDATA", payload: resp.data})
       }, (err) => {
-        setUserDetails(null);
         console.log(err);
       })
     }
@@ -25,9 +22,7 @@ export default function Home() {
   return (
 
     <Container>
-      {/* {userDetails && (
-        <MyAccountDetails userDetails={userDetails} />
-      )} */}
+
 
     </Container>
   )

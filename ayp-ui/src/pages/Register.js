@@ -48,14 +48,16 @@ const Register = () => {
     const [conrfirmPasswordErr, setConfirmPasswordErr] = useState(false);
     const [isPending, setIsPending] = useState(false);
     const [responseError, setresponseError] = useState(false);
-    const { axiosInstance: axios, handleEmailVerification, handleRegister } = useAxios();
+    const {axiosInstance: axios, handleNickNameVerification, handleEmailVerification} = useAxios();
     const history = useHistory();
 
 
     const { dispatch } = useAuthContext();
 
-    const validateNick = () => {
-        if (nick.length < 2) {
+
+    const validateNick = async () => {
+        debugger;
+        if (nick.length < 2 || await handleNickNameVerification(nick)) {
             setNickError(true)
         } else {
             setNickError(false);
@@ -128,7 +130,7 @@ const Register = () => {
         setIsPending(true);
         e.preventDefault();
 
-        const response = await handleRegister({
+        const response = await axios.post("register", {
             email: email,
             nickName: nick,
             natonality: nationality,
@@ -140,6 +142,7 @@ const Register = () => {
             setIsPending(false);
             history.push("/login");
         } else if (response.status === 400) {
+            debugger;
             setIsPending(false);
             const er = response.data.errors;
             if (er.email.length > 0) {
@@ -155,6 +158,7 @@ const Register = () => {
             setIsPending(false)
             setresponseError(true);
         }
+
     }
     return (
         <Grid>
@@ -177,7 +181,7 @@ const Register = () => {
                         onBlur={validateNick}
 
                     />
-                    {nickError && <Typography variant='body1' color="error" >Nick has to be at least 2 characters long.</Typography>}
+                    {nickError && <Typography variant='body1' color="error" >Nick is invalid or already taken.</Typography>}
 
                     <TextField
                         fullWidth
