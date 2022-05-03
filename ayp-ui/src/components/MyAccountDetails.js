@@ -42,8 +42,8 @@ const useStyles = makeStyles((theme) => ({
     largeAvatar: {
         width: theme.spacing(12),
         height: theme.spacing(12),
-        border:"2px solid black"
-      },
+        border: "2px solid black"
+    },
     formInputs: {
         padding: "0px",
         width: theme.spacing(50),
@@ -59,31 +59,33 @@ const useStyles = makeStyles((theme) => ({
         marginTop: theme.spacing(1.5)
     }
 }));
+const STEAMID_ERRROR_1 = "Your steamId can be changed within 7 days of last update."
+const STEAMID_ERRROR_2 = "SteamId you provided is already taken";
+const STEAMID_ERRROR_3 = "SteamId you provided is invalid or does not exist";
+const STEAMID_ERRROR_4 = "Something went wrong, please try again later";
 
 const MyAccountDetails = () => {
     const classes = useStyles();
     const { user, dispatch } = useAuthContext();
-    const { axiosInstance: axios, validateSteamId, handleEmailVerification, handleNickNameVerification, handleUserDetailsUpdate, handleLogin} = useAxios()
+    const { axiosInstance: axios, validateSteamId, handleEmailVerification, handleNickNameVerification, handleUserDetailsUpdate, handleLogin } = useAxios()
     const [email, setEmail] = useState(user.email);
     const [nickName, setNickName] = useState(user.nickName);
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber ?? "");
     const [nationality, setNationality] = useState(user.nationality);
     const [lastLogin, setLastLogIn] = useState(user.lastLogOn);
     const [steamID, setSteamID] = useState(user.steamId)
-    const [isSteamIdValid, setIsSteamIdValid] = useState(false);
+    const [steamIdErrorMessage, setSteamIdErrorMessage] = useState("");
     const [isEditMode, setIsEditMode] = useState(false);
     const [steamEdition, setSteamEdition] = useState(false);
-    const [isValidForm, setIsValidForm] = useState(false);
     const [reload, setReload] = useState(false);
     const [emailError, setEmailError] = useState("");
     const [nickError, setNickError] = useState("");
     const [disabled, setDisabled] = useState(true);
     const [password, setPassword] = useState("");
     const [errorInSavingData, setErrorInSavingData] = useState(false);
-
     const history = useHistory();
 
-    const handleUpdateUserDataSubmit = (e) =>{
+    const handleUpdateUserDataSubmit = (e) => {
         setErrorInSavingData(false);
         e.preventDefault();
         const user = {
@@ -93,22 +95,22 @@ const MyAccountDetails = () => {
             nationality,
             password
         };
-        handleUserDetailsUpdate(user).then(success =>{
+        handleUserDetailsUpdate(user).then(success => {
             setReload(prev => !prev);
-        }, err =>{
+        }, err => {
             setErrorInSavingData(true)
             console.log(err);
         })
 
-        if(!errorInSavingData){
+        if (!errorInSavingData) {
             handleLogin(email, password).then(success => {
-                if(success.verificationResult === 0){
-                    dispatch({type:"UPDATE_TOKEN", payload: success.token})
-                }else{
-                    dispatch({type:"LOGOUT"})
+                if (success.verificationResult === 0) {
+                    dispatch({ type: "UPDATE_TOKEN", payload: success.token })
+                } else {
+                    dispatch({ type: "LOGOUT" })
                     history.push('/login');
                 }
-            },err => {
+            }, err => {
                 console.log(err);
             })
         }
@@ -117,7 +119,7 @@ const MyAccountDetails = () => {
     }
 
     const validateNick = async () => {
-        if(user.nickName !== nickName){
+        if (user.nickName !== nickName) {
             if (nickName.length < 2 || await handleNickNameVerification(nickName)) {
                 setNickError("Nick is invalid or already taken.")
             } else {
@@ -126,35 +128,83 @@ const MyAccountDetails = () => {
             if (!nickName) {
                 setNickError("")
             }
-        }else{
+        } else {
             setNickError("")
         }
     }
 
     const handleValidateSteamId = () => {
+        setSteamIdErrorMessage("");
         if (steamID !== user.steamId && steamID.length) {
             validateSteamId(steamID)
-                .then(success => {
-                    setIsSteamIdValid(success.data);
+                .then(result => {
+                    debugger;
+                    switch (result.data) {
+                        case 0: {
+                            setSteamIdErrorMessage("")
+                            break;
+                        }
+                        case 2: {
+                            setSteamIdErrorMessage(STEAMID_ERRROR_2);
+                            break;
+                        }
+                        case 3: {
+                            setSteamIdErrorMessage(STEAMID_ERRROR_3);
+                            break;
+                        }
+                        default: {
+                            setSteamIdErrorMessage("");
+                            break;
+                        }
+                    }
+                    const test = !steamIdErrorMessage || steamID === user.steamId;
                 }, err => {
+                    setSteamIdErrorMessage("SteamId you provided is invalid or does not exist");
                     console.log(err);
                 })
         }
     }
+    const handleErrorForSteamId = (errMsg, editState) => {
+        setSteamIdErrorMessage(errMsg)
+        setSteamEdition(editState);
+    }
     const handleSteamIdUpdate = () => {
+        debugger;
         axios.put("Account/setSteamId", {
             steamId: steamID,
-            resetValue: false // temporary
+            resetValue: false // temp
         }).then(success => {
-            axios.put("Account/updateSteamData").then(succ => {
-                setReload(prev => !prev)
-            }, err => {
-                console.log(err);
-            })
+            debugger;
+            switch (success.data) {
+                case 0: {
+                    axios.put("Account/updateSteamData").then(succ => {
+                        setReload(prev => !prev)
+                    }, err => {
+                        console.log(err);
+                    })
+                    handleErrorForSteamId("", false);
+                    break;
+                }
+                case 1: {
+                    handleErrorForSteamId(STEAMID_ERRROR_1, true);
+                    break;
+                }
+                case 2: {
+                    handleErrorForSteamId(STEAMID_ERRROR_2, true);
+                    break;
+                }
+                case 3: {
+                    handleErrorForSteamId(STEAMID_ERRROR_3, true);
+                    break;
+                }
+                case 4: {
+                    handleErrorForSteamId(STEAMID_ERRROR_4, true);
+                    break;
+                }
+            }
         }, (err) => {
             setReload(prev => !prev)
         })
-        setSteamEdition(false)
     }
     const handleResetFormToPropsData = () => {
         setEmail(user.email);
@@ -170,7 +220,7 @@ const MyAccountDetails = () => {
     const validateEmail = async () => {
         if (!EmailValidator.validate(email)) {
             setEmailError("Please enter a valid email address");
-        } else if (user.email !== email &&  await handleEmailVerification(email)) {
+        } else if (user.email !== email && await handleEmailVerification(email)) {
             setEmailError("Email you provided is already taken.");
         } else {
             setEmailError("")
@@ -182,7 +232,7 @@ const MyAccountDetails = () => {
 
     useEffect(() => {
         axios.get("Account").then((resp) => {
-            dispatch({type:"UPDATE_USER_STEAMDATA", payload: resp.data})
+            dispatch({ type: "UPDATE_USER_STEAMDATA", payload: resp.data })
         }, (err) => {
             console.log(err);
         })
@@ -203,12 +253,12 @@ const MyAccountDetails = () => {
         } else {
             setDisabled(false);
         }
-    },[email, nickName, phoneNumber, nationality, isEditMode, password])
+    }, [email, nickName, phoneNumber, nationality, isEditMode, password])
 
     return (
         <Grid container className={classes.root}  >
             <Paper elevation={5} >
-                <Grid item  style={{
+                <Grid item style={{
                     marginBottom: steamEdition ? "57px" : "10px"
                 }}>
                     {!user?.avatarImage &&
@@ -220,7 +270,7 @@ const MyAccountDetails = () => {
                     }
                     {user?.avatarImage && (
                         <div className={classes.avatar} >
-                            <a href={user.steamProfileUrl} target="_blank" > 
+                            <a href={user.steamProfileUrl} target="_blank" >
                                 <Avatar
                                     variant="circle"
                                     src={user.avatarImage ?? "/Account-icon.svg"}
@@ -228,7 +278,7 @@ const MyAccountDetails = () => {
                                 >
                                 </Avatar>
                             </a>
-                         </div>
+                        </div>
                     )}
 
                 </Grid>
@@ -266,9 +316,9 @@ const MyAccountDetails = () => {
                         variant="outlined"
                         disabled={!isEditMode}
                         onBlur={validateEmail}
-                        error = {emailError}
+                        error={emailError}
                     />
-                    {emailError && <Typography variant='body1' color="error" style={{textAlign:'center', marginTop:"-14px"}} >{emailError}</Typography>}
+                    {emailError && <Typography variant='body1' color="error" style={{ textAlign: 'center', marginTop: "-14px" }} >{emailError}</Typography>}
                     <TextField
                         value={nickName}
                         label="Nick Name"
@@ -280,7 +330,7 @@ const MyAccountDetails = () => {
                         onBlur={validateNick}
                         error={nickError}
                     />
-                    {nickError && <Typography variant='body1' color="error" style={{textAlign:'center', marginTop:"-14px"}} >{nickError}</Typography>}
+                    {nickError && <Typography variant='body1' color="error" style={{ textAlign: 'center', marginTop: "-14px" }} >{nickError}</Typography>}
 
                     <TextField
                         value={phoneNumber}
@@ -314,7 +364,8 @@ const MyAccountDetails = () => {
                         disabled
                     />
                     <TextField
-                        value={steamID ?? "Add SteamID"}
+                        value={steamID}
+                        placeholder={steamID ?? "Add SteamID"}
                         label="SteamID"
                         onChange={(e) => setSteamID(e.target.value)}
                         className={classes.formInputs}
@@ -322,9 +373,9 @@ const MyAccountDetails = () => {
                         variant="outlined"
                         disabled={!steamEdition}
                         onBlur={() => handleValidateSteamId()}
-                        error={!isSteamIdValid && steamEdition && user.steamId !== steamID}
+                        error={steamIdErrorMessage.length > 0 && steamEdition && user.steamId !== steamID}
                     />
-                     {isEditMode && <TextField
+                    {isEditMode && <TextField
                         value={password}
                         label="Password"
                         onChange={(e) => setPassword(e.target.value)}
@@ -353,7 +404,7 @@ const MyAccountDetails = () => {
                                 variant="outlined"
                                 size="small"
                                 onClick={() => handleSteamIdUpdate()}
-                                disabled={!isSteamIdValid || steamID === user.steamId}
+                                disabled={steamIdErrorMessage || steamID === user.steamId}
                             >
                                 Save Changes
                             </Button>
@@ -371,7 +422,7 @@ const MyAccountDetails = () => {
                                 Cancel
                             </Button>
                         </ButtonGroup>}
-                    {!isSteamIdValid && user.steamId !== steamID &&
+                    {steamIdErrorMessage.length > 0 && user.steamId !== steamID &&
                         <Typography
                             style={{
                                 textAlign: "center"
@@ -379,7 +430,7 @@ const MyAccountDetails = () => {
                             color="error"
                             variant='body2'
                         >
-                            SteamID you provided is already taken or does not exists.
+                            {steamIdErrorMessage}
                         </Typography>
                     }
 

@@ -74,7 +74,7 @@ const Layout = ({ children }) => {
         },
         {
             text: 'My Stats',
-            icon: <PollIcon color="primary"/>,
+            icon: <PollIcon color="primary" />,
             path: '/'
         },
         {
@@ -82,11 +82,7 @@ const Layout = ({ children }) => {
             icon: <AccountBoxIcon color='primary' />,
             path: '/my-account'
         },
-        {
-            text: 'Create Notes',
-            icon: <AddCircleOutlined color='primary' />,
-            path: '/create'
-        },
+
     ]
     return (
         <div className={classes.root}>
