@@ -138,7 +138,6 @@ const MyAccountDetails = () => {
         if (steamID !== user.steamId && steamID.length) {
             validateSteamId(steamID)
                 .then(result => {
-                    debugger;
                     switch (result.data) {
                         case 0: {
                             setSteamIdErrorMessage("")
@@ -169,12 +168,10 @@ const MyAccountDetails = () => {
         setSteamEdition(editState);
     }
     const handleSteamIdUpdate = () => {
-        debugger;
         axios.put("Account/setSteamId", {
             steamId: steamID,
             resetValue: false // temp
         }).then(success => {
-            debugger;
             switch (success.data) {
                 case 0: {
                     axios.put("Account/updateSteamData").then(succ => {

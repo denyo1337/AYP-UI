@@ -49,6 +49,18 @@ const useAxios = () => {
         });
         return response.data;
     }
+    const handleGetFriendsQuery = async (steamid, queryParams) =>{
+        const response = await axiosInstance.get(`Users/friendsLists/${steamid}`,{
+            params:{
+                pageSize: queryParams.pageSize,
+                pageNumber : queryParams.pageNumber,
+                sortBy: queryParams.sortBy,
+                sortDirection: queryParams.sortDirection,
+                searchPhrase: queryParams.searchPhrase
+            }
+        })
+        return response.data;
+    }
 
     return {
         axiosInstance,
@@ -57,7 +69,8 @@ const useAxios = () => {
         handleRegister,
         handleNickNameVerification,
         handleUserDetailsUpdate,
-        handleLogin
+        handleLogin,
+        handleGetFriendsQuery
     };
 }
 

@@ -50,7 +50,6 @@ const Register = () => {
     const history = useHistory();
 
     const validateNick = async () => {
-        debugger;
         if (nick.length < 2 || await handleNickNameVerification(nick)) {
             setNickError(true)
         } else {
@@ -135,7 +134,6 @@ const Register = () => {
             setIsPending(false);
             history.push("/login");
         } else if (response.status === 400) {
-            debugger;
             setIsPending(false);
             const er = response.data.errors;
             if (er.email.length > 0) {

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Container } from '@material-ui/core'
 import useAxios from '../hooks/useAxios'
 import { useAuthContext } from '../hooks/useAuthContext'
+import FriendWindow from './FriendsList/FriendWindow'
 
 export default function Home() {
 
