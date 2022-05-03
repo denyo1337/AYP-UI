@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {useEffect, useState } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core'
@@ -11,7 +11,6 @@ import { Checkbox } from '@material-ui/core'
 import EmailValidator from 'email-validator'
 import { useAuthContext } from '../hooks/useAuthContext'
 import useAxios from '../hooks/useAxios'
-import { FreeBreakfastOutlined, RepeatOneSharp, ReportSharp } from '@material-ui/icons'
 
 
 const useStyles = makeStyles({
@@ -49,7 +48,7 @@ const Login = () => {
     const [authErorr, setAuthError] = useState(null);
     const { jwtToken, dispatch } = useAuthContext();
     const history = useHistory();
-    const {axiosInstance : axios, handleLogin} = useAxios();
+    const {handleLogin} = useAxios();
 
 
     useEffect(() => {
@@ -70,7 +69,7 @@ const Login = () => {
             setDisabled(false);
         }
 
-    }, [email, password])
+    }, [email, password, email, emailError])
 
     const handleSubmit = async (e) => {
         e.preventDefault();

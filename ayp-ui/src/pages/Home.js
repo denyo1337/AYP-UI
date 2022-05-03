@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
-import { Container, Grid } from '@material-ui/core'
+import { useEffect } from 'react'
+import { Container } from '@material-ui/core'
 import useAxios from '../hooks/useAxios'
 import { useAuthContext } from '../hooks/useAuthContext'
-import MyAccountDetails from '../components/MyAccountDetails'
 
 export default function Home() {
 

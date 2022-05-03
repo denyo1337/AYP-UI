@@ -68,11 +68,6 @@ export const authReducer = (state, action) => {
             localStorage.setItem('jwtToken', action.payload);
             return {...state, jwtToken: action.payload}
         }
-        case "UPDATE_USER":{
-            let userUpdate = mapUpdateUser(action.payload);
-
-            return {...state}
-        }
         case 'LOGOUT':
             localStorage.clear();
             return { ...state, user: null, jwtToken: null }

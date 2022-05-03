@@ -10,7 +10,6 @@ import { makeStyles } from '@material-ui/core'
 import { useEffect, useState } from 'react';
 import EmailValidator from 'email-validator'
 import useAxios from '../hooks/useAxios';
-import { useAuthContext } from '../hooks/useAuthContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const useStyles = makeStyles({
@@ -47,13 +46,8 @@ const Register = () => {
     const [disabled, setDisabled] = useState(true);
     const [conrfirmPasswordErr, setConfirmPasswordErr] = useState(false);
     const [isPending, setIsPending] = useState(false);
-    const [responseError, setresponseError] = useState(false);
     const {axiosInstance: axios, handleNickNameVerification, handleEmailVerification} = useAxios();
     const history = useHistory();
-
-
-    const { dispatch } = useAuthContext();
-
 
     const validateNick = async () => {
         debugger;
@@ -126,7 +120,6 @@ const Register = () => {
     const handleSubmit = async (e) => {
         setEmailError("");
         setNickError(false)
-        setresponseError(false);
         setIsPending(true);
         e.preventDefault();
 
@@ -156,7 +149,6 @@ const Register = () => {
             }
         } else {
             setIsPending(false)
-            setresponseError(true);
         }
 
     }
