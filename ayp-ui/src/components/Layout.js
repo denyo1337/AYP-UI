@@ -91,7 +91,7 @@ const Layout = ({ children }) => {
     const classes = useStyles();
     const history = useHistory()
     const location = useLocation();
-    const { axiosInstance: axios, handleGetFriendsQuery } = useAxios();
+    const { handleGetFriendsQuery } = useAxios();
 
     const { user, dispatch } = useAuthContext();
 
@@ -164,7 +164,7 @@ const Layout = ({ children }) => {
                 elevation={0}
             >
                 <Toolbar>
-                    
+
                     <Search />
 
                     <Typography className={classes.date}>

@@ -46,7 +46,7 @@ const Register = () => {
     const [disabled, setDisabled] = useState(true);
     const [conrfirmPasswordErr, setConfirmPasswordErr] = useState(false);
     const [isPending, setIsPending] = useState(false);
-    const {axiosInstance: axios, handleNickNameVerification, handleEmailVerification} = useAxios();
+    const { axiosInstance: axios, handleNickNameVerification, handleEmailVerification } = useAxios();
     const history = useHistory();
 
     const validateNick = async () => {

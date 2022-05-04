@@ -8,13 +8,14 @@ import { useAuthContext } from './hooks/useAuthContext'
 import Register from './pages/Register'
 import MyAccountDetails from './components/MyAccountDetails'
 import Profile from './components/Profile'
+import SeachError from './components/SearchError'
 const theme = createTheme({
   palette: {
     primary: {
       main: 'rgb(101, 98, 98)'
     },
-    secondary:{
-      main:'rgb(9, 69, 159)'
+    secondary: {
+      main: 'rgb(9, 69, 159)'
     }
 
   }
@@ -48,6 +49,9 @@ function App() {
             <Route path="/my-account">
               {!user && <Login />}
               {user && <MyAccountDetails />}
+            </Route>
+            <Route path="/searchErr/:steamId">
+              <SeachError/>
             </Route>
           </Switch>
         </Layout>

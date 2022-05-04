@@ -48,11 +48,11 @@ const useAxios = () => {
         });
         return response.data;
     }
-    const handleGetFriendsQuery = async (steamid, queryParams) =>{
-        const response = await axiosInstance.get(`Users/friendsLists/${steamid}`,{
-            params:{
+    const handleGetFriendsQuery = async (steamid, queryParams) => {
+        const response = await axiosInstance.get(`Users/friendsLists/${steamid}`, {
+            params: {
                 pageSize: queryParams.pageSize,
-                pageNumber : queryParams.pageNumber,
+                pageNumber: queryParams.pageNumber,
                 sortBy: queryParams.sortBy,
                 sortDirection: queryParams.sortDirection,
                 searchPhrase: queryParams.searchPhrase
@@ -61,7 +61,13 @@ const useAxios = () => {
         return response.data;
     }
     const handleSearchPlayer = async (phrase) => {
+        debugger;
+
         const response = await axiosInstance.get(`Users/searchPlayer?phrase=${phrase}`)
+        const t = response.status;
+        if(response.status !== 200 ){
+            throw new Error("Not Found")
+        }
         return response.data;
     }
     const handlePlayerStats = async (param) => {

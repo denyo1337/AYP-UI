@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Typography from '@material-ui/core/Typography'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core'
@@ -48,8 +48,7 @@ const Login = () => {
     const [authErorr, setAuthError] = useState(null);
     const { jwtToken, dispatch } = useAuthContext();
     const history = useHistory();
-    const {handleLogin} = useAxios();
-
+    const { handleLogin } = useAxios();
 
     useEffect(() => {
         if (email) {
@@ -76,7 +75,7 @@ const Login = () => {
         setAuthError(null);
 
         const data = await handleLogin(email, password);
-        
+
         switch (data.verificationResult) {
             case 0:
                 dispatch({ type: "LOGIN", payload: data.token })

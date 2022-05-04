@@ -3,7 +3,7 @@ import { useContext } from "react";
 
 export const useAuthContext = () => {
     const context = useContext(AuthContext);
-    if(!context){
+    if (!context) {
         throw new Error("Context must be in a scope of AuthContext.Provider")
     }
     return context;

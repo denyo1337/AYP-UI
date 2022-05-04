@@ -22,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
   image: {
     width: 48,
     height: 48,
-    '&:hover':{
-      cursor:'pointer'
+    '&:hover': {
+      cursor: 'pointer'
     }
   },
   img: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '48px',
     borderImage: 'inherit',
     borderRadius: '5px',
-    cursor:"pointer"
+    cursor: "pointer"
   },
 }));
 const playerStatsDisabled = "Players stats are disabled because player account is set to private."
@@ -46,8 +46,8 @@ const FriendWindow = ({ user }) => {
           <Grid item>
             <ButtonBase className={classes.image}>
               <a href={user.profileUrl} target="_blank" style={{
-                textDecoration:'none',
-                cursor:'pointer'
+                textDecoration: 'none',
+                cursor: 'pointer'
               }} >
                 <img className={classes.img} src={user?.avatarFull} style={{
                   border: user.isOnline ? "2px solid #adff2f" : "2px solid gray",
@@ -79,9 +79,9 @@ const FriendWindow = ({ user }) => {
                     padding: '5px'
                   }}>
                     <Tooltip
-                     placement="top"
-                     arrow={true}
-                     title={`See ${user?.nickName} profile.`}
+                      placement="top"
+                      arrow={true}
+                      title={`See ${user?.nickName} profile.`}
                     >
                       <Button variant='outlined' style={{
                         margin: 'auto'
@@ -95,8 +95,8 @@ const FriendWindow = ({ user }) => {
                       placement="top"
                       arrow={true}
                       title={user?.communityvisibilitystate !== 3 ?
-                         playerStatsDisabled.toString() :
-                          `Compare stats with ${user?.nickName} `}
+                        playerStatsDisabled.toString() :
+                        `Compare stats with ${user?.nickName} `}
                     >
                       <div>
                         <Button

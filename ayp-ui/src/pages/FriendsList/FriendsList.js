@@ -1,5 +1,5 @@
 import { makeStyles } from "@material-ui/styles";
-import { FormControl, List, ListItem, TextField } from "@material-ui/core";
+import { Divider, FormControl, List, ListItem, TextField } from "@material-ui/core";
 import TablePagination from '@material-ui/core/TablePagination';
 import MenuItem from '@material-ui/core/MenuItem';
 import FriendWindow from './FriendWindow';
@@ -23,7 +23,7 @@ const FriendsList = (props) => {
 
     const classes = useStyles();
     const handleOnEnterPress = (e) => {
-        if(e.key === 'Enter'){
+        if (e.key === 'Enter') {
             props.handleBlurSearchPhrase()
         }
     }
@@ -79,11 +79,16 @@ const FriendsList = (props) => {
                     onRowsPerPageChange={props.handleChangeRowsPerPage}
 
                 />
+                 <Divider
+                 style={{
+                     marginBottom:'10px'
+                 }}
+                 ></Divider>
             </div>
-
+           
             {props.friends?.items && props.friends.items.map(user => (
                 <FriendWindow
-                    user = {user}
+                    user={user}
                 />
             ))}
         </div>

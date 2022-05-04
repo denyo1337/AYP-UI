@@ -20,7 +20,10 @@ export default function Home() {
 
   return (
 
-    <Container >
+    <Container style={{
+      width:"100%",
+      height:"100%"
+    }}>
       <Typography variant='h1' color='primary'>
         WELCOME TO AYP CS GO!
       </Typography>
@@ -30,8 +33,8 @@ export default function Home() {
         <Typography variant='h4' color='textSecondary' style={{
           margin: 'auto'
         }}>
-          App is made for simpilified view of your game performance. Create account, provide your private "SteamID"
-          and have a look at your / yours friend performance !
+         App is made for simplified view of your skills performance.
+          Create account, provide your private "Steam ID" and have a look at your / yours friends performance !
         </Typography>
       </div>
     </Container>

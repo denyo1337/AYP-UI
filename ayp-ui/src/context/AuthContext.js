@@ -2,7 +2,7 @@ import jwtDecode from "jwt-decode";
 import { createContext, useReducer } from "react";
 import { useHistory } from "react-router-dom";
 
-let user =  {
+let user = {
     email: null,
     nickName: null,
     steamNickName: null,
@@ -47,9 +47,9 @@ export const authReducer = (state, action) => {
         return user;
     }
 
-    
+
     switch (action.type) {
-        case 'LOGIN':{
+        case 'LOGIN': {
             console.log("Dispatching ")
             let token = action.payload;
             let userFromToken = jwtDecode(token);
@@ -59,14 +59,14 @@ export const authReducer = (state, action) => {
             localStorage.setItem("user", toJson);
             return { ...state, jwtToken: action.payload, user: user }
         }
-        case 'UPDATE_USER_STEAMDATA':{
+        case 'UPDATE_USER_STEAMDATA': {
             let user = mapUpdateUser(action.payload)
             localStorage.setItem("user", JSON.stringify(user))
             return { ...state, user: user }
         }
-        case "UPDATE_TOKEN":{
+        case "UPDATE_TOKEN": {
             localStorage.setItem('jwtToken', action.payload);
-            return {...state, jwtToken: action.payload}
+            return { ...state, jwtToken: action.payload }
         }
         case 'LOGOUT':
             localStorage.clear();

@@ -258,209 +258,209 @@ const MyAccountDetails = () => {
 
     return (
         <Grid container className={classes.root}>
-            {loader && <Loader/>}
-            {!loader && 
-            <Paper elevation={5} >
-                <Grid item style={{
-                    marginBottom: steamEdition ? "57px" : "10px"
-                }}>
-                    {!user?.avatarImage &&
-                        <Avatar
-                            variant="circle"
-                            src="/Account-icon.svg"
-                            className={classes.largeAvatar}
-                        />
-                    }
-                    {user?.avatarImage && (
-                        <div className={classes.avatar} >
-                            <a href={user.steamProfileUrl} target="_blank" >
-                                <Avatar
-                                    variant="circle"
-                                    src={user.avatarImage ?? "/Account-icon.svg"}
-                                    className={classes.largeAvatar}
-                                >
-                                </Avatar>
-                            </a>
-                        </div>
-                    )}
+            {loader && <Loader />}
+            {!loader &&
+                <Paper elevation={5} >
+                    <Grid item style={{
+                        marginBottom: steamEdition ? "57px" : "10px"
+                    }}>
+                        {!user?.avatarImage &&
+                            <Avatar
+                                variant="circle"
+                                src="/Account-icon.svg"
+                                className={classes.largeAvatar}
+                            />
+                        }
+                        {user?.avatarImage && (
+                            <div className={classes.avatar} >
+                                <a href={user.steamProfileUrl} target="_blank" >
+                                    <Avatar
+                                        variant="circle"
+                                        src={user.avatarImage ?? "/Account-icon.svg"}
+                                        className={classes.largeAvatar}
+                                    >
+                                    </Avatar>
+                                </a>
+                            </div>
+                        )}
 
-                </Grid>
-                <Grid item >
-                    {!isEditMode && !steamEdition &&
-                        <Button
-                            className={classes.editButton}
+                    </Grid>
+                    <Grid item >
+                        {!isEditMode && !steamEdition &&
+                            <Button
+                                className={classes.editButton}
+                                startIcon={<EditIcon />}
+                                variant="outlined"
+                                size="small"
+                                onClick={() => setIsEditMode(prev => !prev)}
+                            >
+                                Edit
+                            </Button>
+                        }
+                        {isEditMode &&
+                            <Button
+                                className={classes.editButton}
+                                startIcon={<CancelIcon />}
+                                variant="outlined"
+                                size="small"
+                                onClick={() => handleCancledEditMode()}
+                            >
+                                cancel
+                            </Button>
+                        }
+                    </Grid>
+                    <form onSubmit={handleUpdateUserDataSubmit}>
+                        <TextField
+                            value={email}
+                            label="Email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={classes.formInputs}
+                            id="outlined"
+                            variant="outlined"
+                            disabled={!isEditMode}
+                            onBlur={validateEmail}
+                            error={emailError}
+                        />
+                        {emailError && <Typography variant='body1' color="error" style={{ textAlign: 'center', marginTop: "-14px" }} >{emailError}</Typography>}
+                        <TextField
+                            value={nickName}
+                            label="Nick Name"
+                            onChange={(e) => setNickName(e.target.value)}
+                            className={classes.formInputs}
+                            id="outlined"
+                            variant="outlined"
+                            disabled={!isEditMode}
+                            onBlur={validateNick}
+                            error={nickError}
+                        />
+                        {nickError && <Typography variant='body1' color="error" style={{ textAlign: 'center', marginTop: "-14px" }} >{nickError}</Typography>}
+
+                        <TextField
+                            value={phoneNumber}
+                            label="Phone number"
+                            type="number"
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            className={classes.formInputs}
+                            id="outlined"
+                            variant="outlined"
+                            disabled={!isEditMode}
+
+                        />
+                        <TextField
+                            value={nationality}
+                            label="Nationality"
+                            onChange={(e) => setNationality(e.target.value)}
+                            className={classes.formInputs}
+                            id="outlined"
+                            variant="outlined"
+                            disabled={!isEditMode}
+
+                        />
+
+                        <TextField
+                            value={lastLogin}
+                            label="Last login"
+                            onChange={(e) => setLastLogIn(e.target.value)}
+                            className={classes.formInputs}
+                            id="outlined"
+                            variant="outlined"
+                            disabled
+                        />
+                        <TextField
+                            value={steamID}
+                            placeholder={steamID ?? "Add SteamID"}
+                            label="SteamID"
+                            onChange={(e) => setSteamID(e.target.value)}
+                            className={classes.formInputs}
+                            id="outlined"
+                            variant="outlined"
+                            disabled={!steamEdition}
+                            onBlur={() => handleValidateSteamId()}
+                            error={steamIdErrorMessage.length > 0 && steamEdition && user.steamId !== steamID}
+                        />
+                        {isEditMode && <TextField
+                            value={password}
+                            label="Password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            className={classes.formInputs}
+                            type="password"
+                            id="outlined"
+                            variant="outlined"
+                        />
+                        }
+
+                        {!steamEdition && !isEditMode && <Button
+                            className={classes.editSteamIdButton}
                             startIcon={<EditIcon />}
                             variant="outlined"
                             size="small"
-                            onClick={() => setIsEditMode(prev => !prev)}
+                            onClick={() => setSteamEdition(prev => !prev)}
                         >
-                            Edit
+                            EDIT STEAMID
                         </Button>
-                    }
-                    {isEditMode &&
-                        <Button
-                            className={classes.editButton}
-                            startIcon={<CancelIcon />}
-                            variant="outlined"
-                            size="small"
-                            onClick={() => handleCancledEditMode()}
-                        >
-                            cancel
-                        </Button>
-                    }
-                </Grid>
-                <form onSubmit={handleUpdateUserDataSubmit}>
-                    <TextField
-                        value={email}
-                        label="Email"
-                        onChange={(e) => setEmail(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                        disabled={!isEditMode}
-                        onBlur={validateEmail}
-                        error={emailError}
-                    />
-                    {emailError && <Typography variant='body1' color="error" style={{ textAlign: 'center', marginTop: "-14px" }} >{emailError}</Typography>}
-                    <TextField
-                        value={nickName}
-                        label="Nick Name"
-                        onChange={(e) => setNickName(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                        disabled={!isEditMode}
-                        onBlur={validateNick}
-                        error={nickError}
-                    />
-                    {nickError && <Typography variant='body1' color="error" style={{ textAlign: 'center', marginTop: "-14px" }} >{nickError}</Typography>}
-
-                    <TextField
-                        value={phoneNumber}
-                        label="Phone number"
-                        type="number"
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                        disabled={!isEditMode}
-
-                    />
-                    <TextField
-                        value={nationality}
-                        label="Nationality"
-                        onChange={(e) => setNationality(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                        disabled={!isEditMode}
-
-                    />
-
-                    <TextField
-                        value={lastLogin}
-                        label="Last login"
-                        onChange={(e) => setLastLogIn(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                        disabled
-                    />
-                    <TextField
-                        value={steamID}
-                        placeholder={steamID ?? "Add SteamID"}
-                        label="SteamID"
-                        onChange={(e) => setSteamID(e.target.value)}
-                        className={classes.formInputs}
-                        id="outlined"
-                        variant="outlined"
-                        disabled={!steamEdition}
-                        onBlur={() => handleValidateSteamId()}
-                        error={steamIdErrorMessage.length > 0 && steamEdition && user.steamId !== steamID}
-                    />
-                    {isEditMode && <TextField
-                        value={password}
-                        label="Password"
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={classes.formInputs}
-                        type="password"
-                        id="outlined"
-                        variant="outlined"
-                    />
-                    }
-
-                    {!steamEdition && !isEditMode && <Button
-                        className={classes.editSteamIdButton}
-                        startIcon={<EditIcon />}
-                        variant="outlined"
-                        size="small"
-                        onClick={() => setSteamEdition(prev => !prev)}
-                    >
-                        EDIT STEAMID
-                    </Button>
-                    }
-                    {steamEdition &&
-                        <ButtonGroup>
-                            <Button
-                                className={classes.editSteamIdButton}
-                                startIcon={<SaveIcon />}
-                                variant="outlined"
-                                size="small"
-                                onClick={() => handleSteamIdUpdate()}
-                                disabled={steamIdErrorMessage || steamID === user.steamId}
+                        }
+                        {steamEdition &&
+                            <ButtonGroup>
+                                <Button
+                                    className={classes.editSteamIdButton}
+                                    startIcon={<SaveIcon />}
+                                    variant="outlined"
+                                    size="small"
+                                    onClick={() => handleSteamIdUpdate()}
+                                    disabled={steamIdErrorMessage || steamID === user.steamId}
+                                >
+                                    Save Changes
+                                </Button>
+                                <Button
+                                    className={classes.editSteamIdButton}
+                                    startIcon={<CancelIcon />}
+                                    variant="outlined"
+                                    color="secondary"
+                                    size="small"
+                                    onClick={() => {
+                                        setSteamEdition(false)
+                                        setSteamID(user.steamId)
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                            </ButtonGroup>}
+                        {steamIdErrorMessage.length > 0 && user.steamId !== steamID &&
+                            <Typography
+                                style={{
+                                    textAlign: "center"
+                                }}
+                                color="error"
+                                variant='body2'
                             >
-                                Save Changes
-                            </Button>
-                            <Button
-                                className={classes.editSteamIdButton}
-                                startIcon={<CancelIcon />}
-                                variant="outlined"
-                                color="secondary"
-                                size="small"
-                                onClick={() => {
-                                    setSteamEdition(false)
-                                    setSteamID(user.steamId)
+                                {steamIdErrorMessage}
+                            </Typography>
+                        }
+
+                        {isEditMode &&
+                            <Grid
+                                item
+                                style={{
+                                    textAlign: "center"
                                 }}
                             >
-                                Cancel
-                            </Button>
-                        </ButtonGroup>}
-                    {steamIdErrorMessage.length > 0 && user.steamId !== steamID &&
-                        <Typography
-                            style={{
-                                textAlign: "center"
-                            }}
-                            color="error"
-                            variant='body2'
-                        >
-                            {steamIdErrorMessage}
-                        </Typography>
-                    }
-
-                    {isEditMode &&
-                        <Grid
-                            item
-                            style={{
-                                textAlign: "center"
-                            }}
-                        >
-                            <Button
-                                type='submit'
-                                variant="contained"
-                                startIcon={<SaveIcon size='small' />}
-                                size='large'
-                                color='secondary'
-                                disabled={disabled}
-                            >
-                                Save
-                            </Button>
-                        </Grid>
-                    }
-                </form>
-            </Paper>
+                                <Button
+                                    type='submit'
+                                    variant="contained"
+                                    startIcon={<SaveIcon size='small' />}
+                                    size='large'
+                                    color='secondary'
+                                    disabled={disabled}
+                                >
+                                    Save
+                                </Button>
+                            </Grid>
+                        }
+                    </form>
+                </Paper>
             }
         </Grid>
-    
+
     );
 }
 

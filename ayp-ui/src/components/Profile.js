@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useAuthContext } from "../hooks/useAuthContext";
 import useAxios from "../hooks/useAxios";
 import { makeStyles } from '@material-ui/core/styles';
@@ -44,19 +44,20 @@ const Profile = () => {
     const [profileStats, setProfileStats] = useState(null);
     const [loader, setLoader] = useState(false);
     const classes = useStyles();
-
+    const history = useHistory();
     useEffect(() => {
-        debugger;
         setLoader(true);
         handleSearchPlayer(steamId ?? user.steamId).then(data => {
             setProfileData(data);
             handlePlayerStats(data.steamId).then(data => {
                 setProfileStats(data);
             }, err => {
+                debugger;
                 setProfileStats(null);
-                console.log(err);
+               
             })
         }, err => {
+            history.push(`/searchErr/${steamId}`)
             console.log(err);
         });
 
@@ -102,13 +103,13 @@ const Profile = () => {
                                         variant='h6'
                                         color="primary"
                                     >
-                                        {profileData.realName ?? "No information abour realname"}
+                                        {profileData.realName ?? "No information about real name"}
                                     </Typography>
                                     <Typography
                                         variant='h6'
                                         color="primary"
                                     >
-                                        Creation Date: {profileData.accountCreated ?? "No information abour realname"}
+                                        Creation Date: {profileData.accountCreated ?? "No info "}
                                     </Typography>
                                     {profileStats && (
                                         <div>
@@ -139,7 +140,7 @@ const Profile = () => {
                                 <Divider />
                                 {profileStats
                                     &&
-                                    <ProfileStats stats = {profileStats}  />
+                                    <ProfileStats stats={profileStats} />
                                 }
                                 {!profileStats && <Typography
                                     variant='h6'

@@ -7,25 +7,25 @@ const useStyles = makeStyles((theme) => ({
         marginLeft: theme.spacing(60),
         marginTop: theme.spacing(30)
     },
-    container:{
-        width:'100%',
-        height:'800px'
+    container: {
+        width: '100%',
+        height: '800px'
     },
-    profileContainer:{
-        width:'100%',
-        height:"100%"
+    profileContainer: {
+        width: '100%',
+        height: "100%"
     }
 }));
 
 const Loader = () => {
     const classes = useStyles();
-    return ( 
+    return (
         <div className={classes.root}>
-        <CircularProgress
-            color="secondary"
-            size="300px" />
-    </div>
-     );
+            <CircularProgress
+                color="secondary"
+                size="300px" />
+        </div>
+    );
 }
- 
+
 export default Loader;
