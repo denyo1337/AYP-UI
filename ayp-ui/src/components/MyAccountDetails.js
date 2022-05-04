@@ -14,6 +14,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import useAxios from '../hooks/useAxios'
 import Typography from '@material-ui/core/Typography';
 import EmailValidator from 'email-validator'
+import Loader from './Loader';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -83,6 +84,7 @@ const MyAccountDetails = () => {
     const [disabled, setDisabled] = useState(true);
     const [password, setPassword] = useState("");
     const [errorInSavingData, setErrorInSavingData] = useState(false);
+    const [loader, setLoader] = useState(true);
     const history = useHistory();
 
     const handleUpdateUserDataSubmit = (e) => {
@@ -228,11 +230,13 @@ const MyAccountDetails = () => {
     }
 
     useEffect(() => {
+        setLoader(true)
         axios.get("Account").then((resp) => {
             dispatch({ type: "UPDATE_USER_STEAMDATA", payload: resp.data })
         }, (err) => {
             console.log(err);
         })
+        setLoader(false);
     }, [reload, user])
 
     useEffect(() => {
@@ -253,7 +257,9 @@ const MyAccountDetails = () => {
     }, [email, nickName, phoneNumber, nationality, isEditMode, password])
 
     return (
-        <Grid container className={classes.root}  >
+        <Grid container className={classes.root}>
+            {loader && <Loader/>}
+            {!loader && 
             <Paper elevation={5} >
                 <Grid item style={{
                     marginBottom: steamEdition ? "57px" : "10px"
@@ -452,7 +458,9 @@ const MyAccountDetails = () => {
                     }
                 </form>
             </Paper>
+            }
         </Grid>
+    
     );
 }
 

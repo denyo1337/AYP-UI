@@ -16,7 +16,7 @@ import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import PollIcon from '@material-ui/icons/Poll';
 import FriendsList from "../pages/FriendsList/FriendsList";
 import useAxios from '../hooks/useAxios'
-
+import Search from '../components/Search'
 
 const drawerWith = 370;
 const menuItems = [
@@ -28,7 +28,7 @@ const menuItems = [
     {
         text: 'My Stats',
         icon: <PollIcon color="primary" />,
-        path: '/my-stats'
+        path: '/profile'
     },
     {
         text: 'Account',
@@ -74,15 +74,15 @@ const useStyles = makeStyles((theme) => {
         logout: {
             marginLeft: theme.spacing(2)
         },
-        searchInputs:{
-            width:'30%',
-            marginRight:'5px',
+        searchInputs: {
+            width: '30%',
+            marginRight: '5px',
             display: "inline-block",
-            height:'41px'
+            height: '41px'
         },
-        searchDiv:{
-            marginTop:'30px',
-            marginBottom:"-10px"
+        searchDiv: {
+            marginTop: '30px',
+            marginBottom: "-10px"
         }
     }
 })
@@ -91,25 +91,25 @@ const Layout = ({ children }) => {
     const classes = useStyles();
     const history = useHistory()
     const location = useLocation();
-    const {axiosInstance : axios, handleGetFriendsQuery} = useAxios();
+    const { axiosInstance: axios, handleGetFriendsQuery } = useAxios();
 
     const { user, dispatch } = useAuthContext();
-    
+
     const [friendList, setFriendList] = useState(null);
-    const [pageNumber, setPageNumber] = useState(1);
-    const [pageSize, setPageSize] = useState(50);
+    const [pageNumber, setPageNumber] = useState(0);
+    const [pageSize, setPageSize] = useState(25);
     const [sortBy, setSortBy] = useState("isonline");
-    const [sortDirection, setSortDirection] = useState(0);
+    const [sortDirection, setSortDirection] = useState(1);
     const [searchPhrase, setSearchPhrase] = useState('');
-    
+    const [phraseChanged, setPhraseChanged] = useState(false);
 
     const handleSortBy = (e) => {
-      setSortBy(e.target.value);
+        setSortBy(e.target.value);
     };
-    const handleSortDirection = (e) =>{
+    const handleSortDirection = (e) => {
         setSortDirection(e.target.value)
     }
-    const handleChangePage = (newPage) => {
+    const handleChangePage = (event, newPage) => {
         setPageNumber(newPage);
     };
     const handleChangeRowsPerPage = (e) => {
@@ -120,6 +120,9 @@ const Layout = ({ children }) => {
     const handleSearchPhrase = (e) => {
         setSearchPhrase(e.target.value);
     }
+    const handleBlurSearchPhrase = () => {
+        setPhraseChanged(prev => !prev);
+    }
 
 
     const handleLogout = () => {
@@ -127,11 +130,10 @@ const Layout = ({ children }) => {
         history.push("/");
     }
     useEffect(() => {
-        debugger;
         if (user) {
             const queryParams = {
                 pageSize,
-                pageNumber,
+                pageNumber: pageNumber + 1,
                 sortBy,
                 sortDirection,
                 searchPhrase
@@ -139,14 +141,14 @@ const Layout = ({ children }) => {
             handleGetFriendsQuery(user.steamId, queryParams)
                 .then(data => {
                     setFriendList(data);
+
                 }, err => {
                     console.log(err);
                 });
-        }else{
+        } else {
             setFriendList(null);
         }
-        console.log(sortBy, searchPhrase, sortDirection, pageNumber, pageSize);
-    }, [user, pageSize, pageNumber, searchPhrase, sortBy, sortDirection])
+    }, [user, pageSize, pageNumber, phraseChanged, sortBy, sortDirection])
 
 
     return (
@@ -162,6 +164,9 @@ const Layout = ({ children }) => {
                 elevation={0}
             >
                 <Toolbar>
+                    
+                    <Search />
+
                     <Typography className={classes.date}>
                         CS:GO app for stats! Date {format(new Date(), 'do MMMM Y')}
                     </Typography>
@@ -215,7 +220,7 @@ const Layout = ({ children }) => {
 
 
                 </Toolbar>
-                <Divider/>
+                <Divider />
             </AppBar>
 
             <Drawer
@@ -229,7 +234,7 @@ const Layout = ({ children }) => {
                         AYP CSGO STATS
                     </Typography>
                 </div>
-                <Divider/>
+                <Divider />
                 {/* list/ links */}
 
                 <List>
@@ -247,28 +252,30 @@ const Layout = ({ children }) => {
                         </ListItem>
                     ))}
                 </List>
-                
+
                 {/* Friend list goes here */}
-                <Divider/>
-              
-               <Divider/>
-                    {user &&
+                <Divider />
+
+                <Divider />
+                {user &&
                     <Grid >
                         <FriendsList
                             friends={friendList}
                             handleChangePage={handleChangePage}
-                            handleChangeRowsPerPage = {handleChangeRowsPerPage}
-                            handleSortBy = {handleSortBy}
+                            handleChangeRowsPerPage={handleChangeRowsPerPage}
+                            handleSortBy={handleSortBy}
                             handleSortDirection={handleSortDirection}
-                            handleSearchPhrase = {handleSearchPhrase}
-                            sortBy = {sortBy}
-                            pageNumber = {pageNumber}
-                            pageSize = {pageSize}
-                            sortDirection = {sortDirection}
-                            searchPhrase = {searchPhrase}
+                            handleSearchPhrase={handleSearchPhrase}
+                            sortBy={sortBy}
+                            pageNumber={pageNumber}
+                            pageSize={pageSize}
+                            sortDirection={sortDirection}
+                            searchPhrase={searchPhrase}
+                            setSearchPhrase={setSearchPhrase}
+                            handleBlurSearchPhrase={handleBlurSearchPhrase}
                         />
                     </Grid>
-                    }
+                }
             </Drawer>
             <div className={classes.page}>
                 <div className={classes.toolbar}>

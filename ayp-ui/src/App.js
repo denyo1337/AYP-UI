@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import Create from './pages/Create'
 import React from 'react'
 import { createTheme, ThemeProvider } from '@material-ui/core'
 import Layout from './components/Layout'
@@ -8,7 +7,7 @@ import Home from './pages/Home'
 import { useAuthContext } from './hooks/useAuthContext'
 import Register from './pages/Register'
 import MyAccountDetails from './components/MyAccountDetails'
-
+import Profile from './components/Profile'
 const theme = createTheme({
   palette: {
     primary: {
@@ -31,8 +30,12 @@ function App() {
             <Route exact path="/">
               <Home />
             </Route>
-            <Route path="/create">
-              <Create />
+            <Route exact path="/profile/:steamId">
+              <Profile />
+            </Route>
+            <Route exact path="/profile/">
+              {user && <Profile />}
+              {!user && <Login />}
             </Route>
             <Route path="/login">
               {!user && <Login />}

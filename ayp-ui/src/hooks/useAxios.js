@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useAuthContext } from "./useAuthContext";
 
 const baseURL = "https://localhost:7223/ayb/api/";
 
@@ -61,6 +60,14 @@ const useAxios = () => {
         })
         return response.data;
     }
+    const handleSearchPlayer = async (phrase) => {
+        const response = await axiosInstance.get(`Users/searchPlayer?phrase=${phrase}`)
+        return response.data;
+    }
+    const handlePlayerStats = async (param) => {
+        const response = await axiosInstance.get(`Stats/userStats/${param}`);
+        return response.data;
+    }
 
     return {
         axiosInstance,
@@ -70,7 +77,9 @@ const useAxios = () => {
         handleNickNameVerification,
         handleUserDetailsUpdate,
         handleLogin,
-        handleGetFriendsQuery
+        handleGetFriendsQuery,
+        handleSearchPlayer,
+        handlePlayerStats
     };
 }
 

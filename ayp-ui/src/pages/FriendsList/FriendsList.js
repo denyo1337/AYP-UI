@@ -22,7 +22,11 @@ const useStyles = makeStyles((theme) => {
 const FriendsList = (props) => {
 
     const classes = useStyles();
-
+    const handleOnEnterPress = (e) => {
+        if(e.key === 'Enter'){
+            props.handleBlurSearchPhrase()
+        }
+    }
     return (
         <div>
             <div className={classes.searchDiv}>
@@ -37,6 +41,8 @@ const FriendsList = (props) => {
                     label="Phrase"
                     value={props.searchPhrase}
                     onChange={props.handleSearchPhrase}
+                    onBlur={props.handleBlurSearchPhrase}
+                    onKeyDown={handleOnEnterPress}
                 />
                 <Select
                     className={classes.searchInputs}
@@ -65,18 +71,19 @@ const FriendsList = (props) => {
             <div>
                 <TablePagination
                     component="div"
-                    count={props.friends?.totalPages ?? 100}
+                    count={props.friends?.totalItemsCount ?? -1}
                     page={props.pageNumber}
                     onPageChange={props.handleChangePage}
                     rowsPerPage={props.pageSize}
                     labelRowsPerPage={"rows"}
                     onRowsPerPageChange={props.handleChangeRowsPerPage}
+
                 />
             </div>
 
             {props.friends?.items && props.friends.items.map(user => (
                 <FriendWindow
-                    user
+                    user = {user}
                 />
             ))}
         </div>
