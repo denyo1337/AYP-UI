@@ -45,7 +45,7 @@ const StatsComparer = () => {
                 return playerTwo?.pistols?.find(x => x.name === statName).value < playerOne?.pistols?.find(x => x.name === statName).value ? better : worse;
             }
             case 'rifles': {
-                return playerTwo?.rifles?.find(x => x.name === statName).value ?? 0 < playerOne?.rifles?.find(x => x.name === statName).value ? better : worse;
+                return playerTwo?.rifles?.find(x => x.name === statName).value < playerOne?.rifles?.find(x => x.name === statName).value ? better : worse;
             }
             case 'smgs': {
                 return playerTwo?.smgs?.find(x => x.name === statName).value < playerOne?.smgs?.find(x => x.name === statName).value ? better : worse;
