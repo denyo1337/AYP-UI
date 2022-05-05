@@ -231,6 +231,10 @@ const MyAccountDetails = () => {
 
     useEffect(() => {
         setLoader(true)
+        axios.put("Account/updateSteamData").then(succ => {
+        }, err => {
+            console.log(err);
+        });
         axios.get("Account").then((resp) => {
             dispatch({ type: "UPDATE_USER_STEAMDATA", payload: resp.data })
         }, (err) => {
@@ -265,11 +269,13 @@ const MyAccountDetails = () => {
                         marginBottom: steamEdition ? "57px" : "10px"
                     }}>
                         {!user?.avatarImage &&
+                        <div className={classes.avatar}>
                             <Avatar
                                 variant="circle"
                                 src="/Account-icon.svg"
                                 className={classes.largeAvatar}
                             />
+                        </div>
                         }
                         {user?.avatarImage && (
                             <div className={classes.avatar} >

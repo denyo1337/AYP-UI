@@ -61,7 +61,6 @@ const useAxios = () => {
         return response.data;
     }
     const handleSearchPlayer = async (phrase) => {
-        debugger;
 
         const response = await axiosInstance.get(`Users/searchPlayer?phrase=${phrase}`)
         const t = response.status;

@@ -52,7 +52,6 @@ const Profile = () => {
             handlePlayerStats(data.steamId).then(data => {
                 setProfileStats(data);
             }, err => {
-                debugger;
                 setProfileStats(null);
                
             })
@@ -140,7 +139,7 @@ const Profile = () => {
                                 <Divider />
                                 {profileStats
                                     &&
-                                    <ProfileStats stats={profileStats} />
+                                    <ProfileStats stats={profileStats} compareStats ={ (p, e) => p > e } />
                                 }
                                 {!profileStats && <Typography
                                     variant='h6'

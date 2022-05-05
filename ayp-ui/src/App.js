@@ -9,6 +9,7 @@ import Register from './pages/Register'
 import MyAccountDetails from './components/MyAccountDetails'
 import Profile from './components/Profile'
 import SeachError from './components/SearchError'
+import StatsComparer from './pages/StatsComparer/StatsComparer'
 const theme = createTheme({
   palette: {
     primary: {
@@ -51,8 +52,13 @@ function App() {
               {user && <MyAccountDetails />}
             </Route>
             <Route path="/searchErr/:steamId">
-              <SeachError/>
+              <SeachError />
             </Route>
+            {user &&
+              <Route path='/profile/:pOne/comparewith/:pTwo'>
+                <StatsComparer />
+              </Route>
+            }
           </Switch>
         </Layout>
       </Router>

@@ -7,6 +7,7 @@ import { Button, ButtonGroup, Divider, Tooltip } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CompareIcon from '@material-ui/icons/Compare';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useAuthContext } from '../../hooks/useAuthContext';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -39,6 +40,7 @@ const playerStatsDisabled = "Players stats are disabled because player account i
 const FriendWindow = ({ user }) => {
   const classes = useStyles();
   const history = useHistory();
+  const {user: mainUser} = useAuthContext();
   return (
     <div className={classes.root} key={user?.steamId}>
       <Paper className={classes.paper} >
@@ -104,6 +106,7 @@ const FriendWindow = ({ user }) => {
                           style={{
                             margin: 'auto'
                           }}
+                          onClick={() => history.push(`/profile/${mainUser?.steamId}/compareWith/${user?.steamId}`)}
                           disabled={user?.communityvisibilitystate !== 3}
                         >
                           <CompareIcon></CompareIcon>

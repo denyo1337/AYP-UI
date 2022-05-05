@@ -122,7 +122,8 @@ const Register = () => {
         setIsPending(true);
         e.preventDefault();
 
-        const response = await axios.post("register", {
+
+        const response = await axios.post("Users/register", {
             email: email,
             nickName: nick,
             natonality: nationality,

@@ -37,9 +37,12 @@ function getRandomInt(min, max) {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
 }
-const ProfileStats = ({ stats }) => {
+const ProfileStats = ({stats, compareStats}) => {
+  debugger;
   const classes = useStyles();
   const { rifles, snipers, smgs, heavyGuns, pistols } = stats;
+
+
   return (
     <TableContainer
       component={Paper}
@@ -64,7 +67,9 @@ const ProfileStats = ({ stats }) => {
         </TableHead>
         <TableBody>
           {rifles.map((rifle) => (
-            <StyledTableRow key={rifle.name}>
+            <StyledTableRow key={rifle.name} style={{
+              background: compareStats === false ? 'none' : compareStats('rifles',rifle.name) 
+            }}>
               <StyledTableCell component="th" scope="row">
                 {rifle.name}
               </StyledTableCell>
@@ -75,7 +80,11 @@ const ProfileStats = ({ stats }) => {
             </StyledTableRow>
           ))}
           {snipers.map((sniper) => (
-            <StyledTableRow key={sniper.name}>
+            <StyledTableRow key={sniper.name}
+            style={{
+              background: compareStats === false ? 'none' : compareStats('snipers',sniper.name)
+            }}
+            >
               <StyledTableCell component="th" scope="row">
                 {sniper.name}
               </StyledTableCell>
@@ -86,7 +95,11 @@ const ProfileStats = ({ stats }) => {
             </StyledTableRow>
           ))}
           {smgs.map((smg) => (
-            <StyledTableRow key={smg.name}>
+            <StyledTableRow key={smg.name}
+            style={{
+              background: compareStats === false ? 'none' : compareStats('smgs',smg.name) 
+            }}
+            >
               <StyledTableCell component="th" scope="row">
                 {smg.name}
               </StyledTableCell>
@@ -97,7 +110,11 @@ const ProfileStats = ({ stats }) => {
             </StyledTableRow>
           ))}
           {heavyGuns.map((heavyGun) => (
-            <StyledTableRow key={heavyGun.name}>
+            <StyledTableRow key={heavyGun.name}
+            style={{
+              background: compareStats === false ? 'none' : compareStats('heavyGuns',heavyGun.name) 
+            }}
+            >
               <StyledTableCell component="th" scope="row">
                 {heavyGun.name}
               </StyledTableCell>
@@ -108,7 +125,11 @@ const ProfileStats = ({ stats }) => {
             </StyledTableRow>
           ))}
           {pistols.map((pistol) => (
-            <StyledTableRow key={pistol.name}>
+            <StyledTableRow key={pistol.name}
+            style={{
+              background: compareStats === false ? 'none' : compareStats('pistols', pistol.name)
+            }}
+            >
               <StyledTableCell component="th" scope="row">
                 {pistol.name}
               </StyledTableCell>
