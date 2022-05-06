@@ -129,7 +129,7 @@ const Profile = () => {
                                                     style={{
                                                         marginTop: '10px'
                                                     }}
-                                                    disabled={!profileStats}
+                                                    disabled={!profileStats || profileData.steamId === user?.steamId}
                                                     onClick={() => history.push(`/profile/${user?.steamId}/comparewith/${steamId}`)}
                                                 >
                                                     Compare stats
