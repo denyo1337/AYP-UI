@@ -35,7 +35,6 @@ const StatsComparer = () => {
     const { handlePlayerStats, handleSearchPlayer } = useAxios();
     
     const compareStats = (sectionName, statName) => {
-        debugger;
         if(!playerOne || !playerTwo) return 'none'; 
         switch (sectionName) {
             case 'heavyGuns': {

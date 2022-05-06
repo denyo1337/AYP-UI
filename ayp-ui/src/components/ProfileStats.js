@@ -38,7 +38,6 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 const ProfileStats = ({stats, compareStats}) => {
-  debugger;
   const classes = useStyles();
   const { rifles, snipers, smgs, heavyGuns, pistols } = stats;
 

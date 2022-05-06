@@ -3,12 +3,11 @@ import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min
 import { useAuthContext } from "../hooks/useAuthContext";
 import useAxios from "../hooks/useAxios";
 import { makeStyles } from '@material-ui/core/styles';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { Avatar, Container, Divider, Grid, Paper, Typography } from "@material-ui/core";
+import { Avatar, Container, Divider, Grid, Paper, Typography, Tooltip} from "@material-ui/core";
 import Loader from "./Loader";
 import { ButtonBase } from "@material-ui/core";
 import ProfileStats from "./ProfileStats";
-
+import { Button } from "@material-ui/core";
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -25,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar: {
         marginLeft: theme.spacing(1),
-        marginTop: theme.spacing(-4),
+        marginTop: theme.spacing(-8),
         width: theme.spacing(30),
         height: theme.spacing(30)
     },
@@ -120,7 +119,22 @@ const Profile = () => {
                                                 HS%: {profileStats?.hsPercentage} | KD ratio: {profileStats?.kd} | Played Hours (in matches): <strong>{profileStats.realTimeGamePlayed} </strong> hours.
 
                                             </Typography>
-
+                                            <Tooltip
+                                                arrow={true}
+                                                placement='right-start'
+                                                title={`Compare with ${profileData.steamNickName}`}
+                                            >
+                                                <Button
+                                                    variant='outlined'
+                                                    style={{
+                                                        marginTop: '10px'
+                                                    }}
+                                                    disabled={!profileStats}
+                                                    onClick={() => history.push(`/profile/${user?.steamId}/comparewith/${steamId}`)}
+                                                >
+                                                    Compare stats
+                                                </Button>
+                                            </Tooltip>
                                         </div>
                                     )
 
