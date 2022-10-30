@@ -9,7 +9,7 @@ const SeachError = () => {
             height: "100%"
         }}>
             <Typography variant='h6' color='primary'>
-               {`Gracz o id lub nicku "${steamId}" nie został znaleziony.`}
+               {`Gracz o id / nicku "${steamId}" nie został znaleziony lub nie podał swojego SteamId.`}
             </Typography>
            
                 

@@ -3,7 +3,6 @@ import { TextField } from '@material-ui/core';
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuthContext } from '../hooks/useAuthContext';
-import useAxios from '../hooks/useAxios';
 
 const Search = () => {
 
@@ -14,10 +13,8 @@ const Search = () => {
     //some dumb logic
     const handleSumbit = (e) => {
         e.preventDefault();
-        if (phrase) {
+        if (phrase.length) {
             history.push(`/profile/${phrase}`)
-        } else {
-            history.push(`/profile/${user.steamId}`)
         }
     }
 

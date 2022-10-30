@@ -2,8 +2,8 @@ import { makeStyles } from "@material-ui/styles";
 import { useEffect, useState } from "react";
 import Drawer from '@material-ui/core/Drawer';
 import Typography from '@material-ui/core/Typography';
-import { Divider, Grid, List, ListItem, ListItemIcon, ListItemText, TextField } from "@material-ui/core";
-import { Pages, SubjectOutlined } from "@material-ui/icons";
+import { Divider, Grid, List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { SubjectOutlined } from "@material-ui/icons";
 import { useHistory, useLocation } from "react-router-dom/cjs/react-router-dom.min";
 import { AppBar, Button, Toolbar } from "@material-ui/core";
 import { format } from 'date-fns'
@@ -15,9 +15,8 @@ import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import AccountBoxIcon from '@material-ui/icons/AccountBox';
 import PollIcon from '@material-ui/icons/Poll';
 import FriendsList from "../pages/FriendsList/FriendsList";
-import useAxios from '../hooks/useAxios'
 import Search from '../components/Search'
-
+import { handleGetFriendsQuery } from "../ayb-requests/requestHandlers"; 
 const drawerWith = 370;
 const menuItems = [
     {
@@ -91,7 +90,6 @@ const Layout = ({ children }) => {
     const classes = useStyles();
     const history = useHistory()
     const location = useLocation();
-    const { handleGetFriendsQuery } = useAxios();
 
     const { user, dispatch } = useAuthContext();
 
@@ -153,20 +151,16 @@ const Layout = ({ children }) => {
 
     return (
         <div className={classes.root}>
-
             <AppBar
                 className={classes.appbar}
                 style={{
                     background: 'white',
                     color: 'black'
                 }}
-
                 elevation={0}
             >
                 <Toolbar>
-
                     <Search />
-
                     <Typography className={classes.date}>
                         CS:GO app for stats! Date {format(new Date(), 'do MMMM Y')}
                     </Typography>
@@ -213,12 +207,7 @@ const Layout = ({ children }) => {
                             </ListItem>
                         </List>
                     }
-                    {/* <Typography>
-                        Mario
-                    </Typography> */}
                     <Avatar src={user?.avatarImage ?? '/Account-icon.svg'} className={classes.avatar} />
-
-
                 </Toolbar>
                 <Divider />
             </AppBar>
@@ -235,8 +224,6 @@ const Layout = ({ children }) => {
                     </Typography>
                 </div>
                 <Divider />
-                {/* list/ links */}
-
                 <List>
                     {menuItems.map(item => (
                         <ListItem
@@ -252,10 +239,7 @@ const Layout = ({ children }) => {
                         </ListItem>
                     ))}
                 </List>
-
-                {/* Friend list goes here */}
                 <Divider />
-
                 <Divider />
                 {user &&
                     <Grid >

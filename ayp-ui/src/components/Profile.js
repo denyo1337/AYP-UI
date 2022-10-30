@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { useAuthContext } from "../hooks/useAuthContext";
-import useAxios from "../hooks/useAxios";
 import { makeStyles } from '@material-ui/core/styles';
-import { Avatar, Container, Divider, Grid, Paper, Typography, Tooltip} from "@material-ui/core";
-import Loader from "./Loader";
+import { Container, Divider, Grid, Paper, Typography, Tooltip} from "@material-ui/core";
 import { ButtonBase } from "@material-ui/core";
-import ProfileStats from "./ProfileStats";
 import { Button } from "@material-ui/core";
+import { handleSearchPlayer, handlePlayerStats } from "../ayb-requests/requestHandlers";
+import Loader from "./Loader";
+import ProfileStats from "./ProfileStats";
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
@@ -32,13 +32,11 @@ const useStyles = makeStyles((theme) => ({
         display: 'inline',
         gridColumn: 2
     }
-
 }));
 
 const Profile = () => {
     const { steamId } = useParams();
     const { user } = useAuthContext();
-    const { handleSearchPlayer, handlePlayerStats } = useAxios()
     const [profileData, setProfileData] = useState(null);
     const [profileStats, setProfileStats] = useState(null);
     const [loader, setLoader] = useState(false);
@@ -51,18 +49,14 @@ const Profile = () => {
             handlePlayerStats(data.steamId).then(data => {
                 setProfileStats(data);
             }, err => {
-                setProfileStats(null);
-               
+                setProfileStats(null);   
             })
         }, err => {
             history.push(`/searchErr/${steamId}`)
             console.log(err);
         });
-
         setLoader(false);
     }, [steamId, user])
-
-
     return (
         <Container className={classes.container}  >
             {loader && <Loader />}
@@ -111,33 +105,33 @@ const Profile = () => {
                                     </Typography>
                                     {profileStats && (
                                         <div>
-
                                             <Typography
                                                 variant='h6'
                                                 color="primary"
                                             >
                                                 HS%: {profileStats?.hsPercentage} | KD ratio: {profileStats?.kd} | Played Hours (in matches): <strong>{profileStats.realTimeGamePlayed} </strong> hours.
-
                                             </Typography>
                                             <Tooltip
                                                 arrow={true}
                                                 placement='right-start'
                                                 title={`Compare with ${profileData.steamNickName}`}
                                             >
-                                                <Button
-                                                    variant='outlined'
-                                                    style={{
-                                                        marginTop: '10px'
-                                                    }}
-                                                    disabled={!profileStats || profileData.steamId === user?.steamId}
-                                                    onClick={() => history.push(`/profile/${user?.steamId}/comparewith/${steamId}`)}
-                                                >
-                                                    Compare stats
-                                                </Button>
+                                                <span>
+                                                    <Button
+                                                        variant='outlined'
+                                                        style={{
+                                                            marginTop: '10px'
+                                                        }}
+                                                        disabled={!profileStats || profileData.steamId === user?.steamId || !user}
+                                                        onClick={() => history.push(`/profile/${user?.steamId}/comparewith/${steamId}`)}
+                                                    >
+                                                        Compare stats
+                                                    </Button>
+                                                </span>
+
                                             </Tooltip>
                                         </div>
                                     )
-
                                     }
                                 </div>
                                 <Typography

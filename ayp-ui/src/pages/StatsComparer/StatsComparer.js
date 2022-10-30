@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
 import ProfileStats from "../../components/ProfileStats";
-import useAxios from "../../hooks/useAxios";
 import { makeStyles } from '@material-ui/core/styles';
 import { Avatar, Divider, Grid, Typography } from "@material-ui/core";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { Label } from "@material-ui/icons";
-
+import { handlePlayerStats, handleSearchPlayer } from "../../ayb-requests/requestHandlers";
 
 const playerStatsViewError = "Player has blocked stats view or has private account.";
 const better = "#b5e7a0";
@@ -32,13 +31,12 @@ const StatsComparer = () => {
     const [playerTwoProfile, setPlayerTwoProfile] = useState(null);
     const { user } = useAuthContext();
 
-    const { handlePlayerStats, handleSearchPlayer } = useAxios();
     
     const compareStats = (sectionName, statName) => {
         if(!playerOne || !playerTwo) return 'none'; 
         switch (sectionName) {
             case 'heavyGuns': {
-                return playerTwo?.heavyGuns?.find(x => x.name === statName).value < playerOne?.heavyGuns?.find(x => x.name === statName).value ? better : worse;
+                return playerTwo?.heavyGuns?.find(x => x.name === statName)?.value < playerOne?.heavyGuns?.find(x => x.name === statName)?.value ? better : worse;
             }
             case 'pistols': {
                 return playerTwo?.pistols?.find(x => x.name === statName).value < playerOne?.pistols?.find(x => x.name === statName).value ? better : worse;

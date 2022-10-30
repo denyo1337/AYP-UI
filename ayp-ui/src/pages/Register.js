@@ -9,8 +9,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core'
 import { useEffect, useState } from 'react';
 import EmailValidator from 'email-validator'
-import useAxios from '../hooks/useAxios';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { handleNickNameVerification, handleEmailVerification, handleRegister } from '../ayb-requests/requestHandlers';
 
 const useStyles = makeStyles({
     paperStyle: {
@@ -46,7 +46,6 @@ const Register = () => {
     const [disabled, setDisabled] = useState(true);
     const [conrfirmPasswordErr, setConfirmPasswordErr] = useState(false);
     const [isPending, setIsPending] = useState(false);
-    const { axiosInstance: axios, handleNickNameVerification, handleEmailVerification } = useAxios();
     const history = useHistory();
 
     const validateNick = async () => {
@@ -123,7 +122,7 @@ const Register = () => {
         e.preventDefault();
 
 
-        const response = await axios.post("Users/register", {
+        const response = await handleRegister( {
             email: email,
             nickName: nick,
             natonality: nationality,
@@ -131,6 +130,7 @@ const Register = () => {
             confirmPassword: confirmPassword,
             gender: gender
         })
+
         if (response.status === 200 && response.data) {
             setIsPending(false);
             history.push("/login");

@@ -10,7 +10,7 @@ import { Avatar } from '@material-ui/core';
 import { Checkbox } from '@material-ui/core'
 import EmailValidator from 'email-validator'
 import { useAuthContext } from '../hooks/useAuthContext'
-import useAxios from '../hooks/useAxios'
+import { handleLogin } from '../ayb-requests/requestHandlers'
 
 
 const useStyles = makeStyles({
@@ -48,7 +48,6 @@ const Login = () => {
     const [authErorr, setAuthError] = useState(null);
     const { jwtToken, dispatch } = useAuthContext();
     const history = useHistory();
-    const { handleLogin } = useAxios();
 
     useEffect(() => {
         if (email) {

@@ -11,10 +11,20 @@ import SaveIcon from '@material-ui/icons/Save';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { useAuthContext } from '../hooks/useAuthContext';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import useAxios from '../hooks/useAxios'
+import {
+    validateSteamId,
+    handleEmailVerification,
+    handleNickNameVerification,
+    handleUserDetailsUpdate,
+    handleLogin,
+    handleUpdateSteamId,
+    handleUpdateSteamDataByPreviousSteamIdChange,
+    handleGetAccountData
+} from '../ayb-requests/requestHandlers'
 import Typography from '@material-ui/core/Typography';
 import EmailValidator from 'email-validator'
 import Loader from './Loader';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -68,7 +78,6 @@ const STEAMID_ERRROR_4 = "Something went wrong, please try again later";
 const MyAccountDetails = () => {
     const classes = useStyles();
     const { user, dispatch } = useAuthContext();
-    const { axiosInstance: axios, validateSteamId, handleEmailVerification, handleNickNameVerification, handleUserDetailsUpdate, handleLogin } = useAxios()
     const [email, setEmail] = useState(user.email);
     const [nickName, setNickName] = useState(user.nickName);
     const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber ?? "");
@@ -86,7 +95,6 @@ const MyAccountDetails = () => {
     const [errorInSavingData, setErrorInSavingData] = useState(false);
     const [loader, setLoader] = useState(true);
     const history = useHistory();
-
     const handleUpdateUserDataSubmit = (e) => {
         setErrorInSavingData(false);
         e.preventDefault();
@@ -158,7 +166,6 @@ const MyAccountDetails = () => {
                             break;
                         }
                     }
-                    const test = !steamIdErrorMessage || steamID === user.steamId;
                 }, err => {
                     setSteamIdErrorMessage("SteamId you provided is invalid or does not exist");
                     console.log(err);
@@ -170,13 +177,10 @@ const MyAccountDetails = () => {
         setSteamEdition(editState);
     }
     const handleSteamIdUpdate = () => {
-        axios.put("Account/setSteamId", {
-            steamId: steamID,
-            resetValue: false // temp
-        }).then(success => {
+        handleUpdateSteamId(steamID).then(success => {
             switch (success.data) {
                 case 0: {
-                    axios.put("Account/updateSteamData").then(succ => {
+                    handleUpdateSteamDataByPreviousSteamIdChange().then(succ => {
                         setReload(prev => !prev)
                     }, err => {
                         console.log(err);
@@ -231,11 +235,11 @@ const MyAccountDetails = () => {
 
     useEffect(() => {
         setLoader(true)
-        axios.put("Account/updateSteamData").then(succ => {
+        handleUpdateSteamDataByPreviousSteamIdChange().then(succ => {
         }, err => {
             console.log(err);
         });
-        axios.get("Account").then((resp) => {
+        handleGetAccountData().then((resp) => {
             dispatch({ type: "UPDATE_USER_STEAMDATA", payload: resp.data })
         }, (err) => {
             console.log(err);
@@ -269,13 +273,13 @@ const MyAccountDetails = () => {
                         marginBottom: steamEdition ? "57px" : "10px"
                     }}>
                         {!user?.avatarImage &&
-                        <div className={classes.avatar}>
-                            <Avatar
-                                variant="circle"
-                                src="/Account-icon.svg"
-                                className={classes.largeAvatar}
-                            />
-                        </div>
+                            <div className={classes.avatar}>
+                                <Avatar
+                                    variant="circle"
+                                    src="/Account-icon.svg"
+                                    className={classes.largeAvatar}
+                                />
+                            </div>
                         }
                         {user?.avatarImage && (
                             <div className={classes.avatar} >
